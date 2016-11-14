@@ -29,6 +29,7 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+node_modules/**
 
 ## OSX
 .DS_Store

@@ -3,6 +3,12 @@
 #include "ofMain.h"
 #include "ofxAudioAnalyzer.h"
 #include "ofxDatGui.h"
+#include "ofxOsc.h"
+
+#include "channel.h"
+
+#define HOST "localhost"
+#define PORT 12345
 
 class ofApp : public ofBaseApp{
   public:
@@ -34,7 +40,9 @@ class ofApp : public ofBaseApp{
     int outChannels;
     int inChannels;
 
-    vector<float> RMSs;
+    vector<Channel> channels;
 
     ofxDatGui* audioSetupGUI;
+
+    ofxOscSender sender;
 };
