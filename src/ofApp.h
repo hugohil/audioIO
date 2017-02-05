@@ -7,7 +7,7 @@
 
 #include "channel.h"
 
-#define HOST "localhost"
+#define HOST "hibou.local"
 #define PORT 12345
 
 class ofApp : public ofBaseApp{
