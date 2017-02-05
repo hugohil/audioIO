@@ -4,34 +4,36 @@
 
 class Channel {
   public:
-    ofxOscMessage getMessageRms(int numChannel);
-    ofxOscMessage getMessagePower(int numChannel);
-    ofxOscMessage getMessagePitchFreq(int numChannel);
-    ofxOscMessage getMessagePitchFreqNorm(int numChannel);
-    ofxOscMessage getMessagePitchConf(int numChannel);
-    ofxOscMessage getMessagePitchSalience(int numChannel);
-    ofxOscMessage getMessageHfc(int numChannel);
-    ofxOscMessage getMessageHfcNorm(int numChannel);
-    ofxOscMessage getMessageSpecComp(int numChannel);
-    ofxOscMessage getMessageSpecCompNorm(int numChannel);
-    ofxOscMessage getMessageCentroid(int numChannel);
-    ofxOscMessage getMessageCentroidNorm(int numChannel);
-    ofxOscMessage getMessageInharmonicity(int numChannel);
-    ofxOscMessage getMessageDissonance(int numChannel);
-    ofxOscMessage getMessageRollOff(int numChannel);
-    ofxOscMessage getMessageRollOffNorm(int numChannel);
-    ofxOscMessage getMessageOddToEven(int numChannel);
-    ofxOscMessage getMessageOddToEvenNorm(int numChannel);
-    ofxOscMessage getMessageStrongPeak(int numChannel);
-    ofxOscMessage getMessageStrongPeakNorm(int numChannel);
-    ofxOscMessage getMessageStrongDecay(int numChannel);
-    ofxOscMessage getMessageStrongDecayNorm(int numChannel);
-    // ofxOscMessage getMessageSpectrum(int numChannel);
-    // ofxOscMessage getMessageMelBands(int numChannel);
-    // ofxOscMessage getMessageMfcc(int numChannel);
-    // ofxOscMessage getMessageHpcp(int numChannel);
-    // ofxOscMessage getMessageTristimulus(int numChannel);
-    ofxOscMessage getMessageIsOnset(int numChannel);
+    ofxOscMessage getMessageRms();
+    ofxOscMessage getMessagePower();
+    ofxOscMessage getMessagePitchFreq();
+    ofxOscMessage getMessagePitchFreqNorm();
+    ofxOscMessage getMessagePitchConf();
+    ofxOscMessage getMessagePitchSalience();
+    ofxOscMessage getMessageHfc();
+    ofxOscMessage getMessageHfcNorm();
+    ofxOscMessage getMessageSpecComp();
+    ofxOscMessage getMessageSpecCompNorm();
+    ofxOscMessage getMessageCentroid();
+    ofxOscMessage getMessageCentroidNorm();
+    ofxOscMessage getMessageInharmonicity();
+    ofxOscMessage getMessageDissonance();
+    ofxOscMessage getMessageRollOff();
+    ofxOscMessage getMessageRollOffNorm();
+    ofxOscMessage getMessageOddToEven();
+    ofxOscMessage getMessageOddToEvenNorm();
+    ofxOscMessage getMessageStrongPeak();
+    ofxOscMessage getMessageStrongPeakNorm();
+    ofxOscMessage getMessageStrongDecay();
+    ofxOscMessage getMessageStrongDecayNorm();
+    // ofxOscMessage getMessageSpectrum();
+    // ofxOscMessage getMessageMelBands();
+    // ofxOscMessage getMessageMfcc();
+    // ofxOscMessage getMessageHpcp();
+    // ofxOscMessage getMessageTristimulus();
+    ofxOscMessage getMessageIsOnset();
+
+    int numChannel;
 
     float rms;
     float power;

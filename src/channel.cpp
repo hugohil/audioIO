@@ -1,225 +1,225 @@
 #include "channel.h"
 
-ofxOscMessage Channel::getMessageRms (int numChannel) {
+ofxOscMessage Channel::getMessageRms () {
   // float rms;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/rms");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/rms");
   m.addFloatArg(rms);
   return m;
 }
 
-ofxOscMessage Channel::getMessagePower (int numChannel) {
+ofxOscMessage Channel::getMessagePower () {
   // float power;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/power");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/power");
   m.addFloatArg(power);
   return m;
 }
 
-ofxOscMessage Channel::getMessagePitchFreq (int numChannel) {
+ofxOscMessage Channel::getMessagePitchFreq () {
   // float pitchFreq;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/pitchFreq");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/pitchFreq");
   m.addFloatArg(pitchFreq);
   return m;
 }
 
-ofxOscMessage Channel::getMessagePitchFreqNorm (int numChannel) {
+ofxOscMessage Channel::getMessagePitchFreqNorm () {
   // float pitchFreqNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/pitchFreqNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/pitchFreqNorm");
   m.addFloatArg(pitchFreqNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessagePitchConf (int numChannel) {
+ofxOscMessage Channel::getMessagePitchConf () {
   // float pitchConf;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/pitchConf");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/pitchConf");
   m.addFloatArg(pitchConf);
   return m;
 }
 
-ofxOscMessage Channel::getMessagePitchSalience (int numChannel) {
+ofxOscMessage Channel::getMessagePitchSalience () {
   // float pitchSalience;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/pitchSalience");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/pitchSalience");
   m.addFloatArg(pitchSalience);
   return m;
 }
 
-ofxOscMessage Channel::getMessageHfc (int numChannel) {
+ofxOscMessage Channel::getMessageHfc () {
   // float hfc;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/hfc");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/hfc");
   m.addFloatArg(hfc);
   return m;
 }
 
-ofxOscMessage Channel::getMessageHfcNorm (int numChannel) {
+ofxOscMessage Channel::getMessageHfcNorm () {
   // float hfcNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/hfcNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/hfcNorm");
   m.addFloatArg(hfcNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageSpecComp (int numChannel) {
+ofxOscMessage Channel::getMessageSpecComp () {
   // float specComp;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/specComp");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/specComp");
   m.addFloatArg(specComp);
   return m;
 }
 
-ofxOscMessage Channel::getMessageSpecCompNorm (int numChannel) {
+ofxOscMessage Channel::getMessageSpecCompNorm () {
   // float specCompNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/specCompNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/specCompNorm");
   m.addFloatArg(specCompNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageCentroid (int numChannel) {
+ofxOscMessage Channel::getMessageCentroid () {
   // float centroid;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/centroid");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/centroid");
   m.addFloatArg(centroid);
   return m;
 }
 
-ofxOscMessage Channel::getMessageCentroidNorm (int numChannel) {
+ofxOscMessage Channel::getMessageCentroidNorm () {
   // float centroidNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/centroidNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/centroidNorm");
   m.addFloatArg(centroidNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageInharmonicity (int numChannel) {
+ofxOscMessage Channel::getMessageInharmonicity () {
   // float inharmonicity;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/inharmonicity");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/inharmonicity");
   m.addFloatArg(inharmonicity);
   return m;
 }
 
-ofxOscMessage Channel::getMessageDissonance (int numChannel) {
+ofxOscMessage Channel::getMessageDissonance () {
   // float dissonance;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/dissonance");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/dissonance");
   m.addFloatArg(dissonance);
   return m;
 }
 
-ofxOscMessage Channel::getMessageRollOff (int numChannel) {
+ofxOscMessage Channel::getMessageRollOff () {
   // float rollOff;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/rollOff");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/rollOff");
   m.addFloatArg(rollOff);
   return m;
 }
 
-ofxOscMessage Channel::getMessageRollOffNorm (int numChannel) {
+ofxOscMessage Channel::getMessageRollOffNorm () {
   // float rollOffNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/rollOffNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/rollOffNorm");
   m.addFloatArg(rollOffNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageOddToEven (int numChannel) {
+ofxOscMessage Channel::getMessageOddToEven () {
   // float oddToEven;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/oddToEven");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/oddToEven");
   m.addFloatArg(oddToEven);
   return m;
 }
 
-ofxOscMessage Channel::getMessageOddToEvenNorm (int numChannel) {
+ofxOscMessage Channel::getMessageOddToEvenNorm () {
   // float oddToEvenNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/oddToEvenNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/oddToEvenNorm");
   m.addFloatArg(oddToEvenNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageStrongPeak (int numChannel) {
+ofxOscMessage Channel::getMessageStrongPeak () {
   // float strongPeak;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/strongPeak");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/strongPeak");
   m.addFloatArg(strongPeak);
   return m;
 }
 
-ofxOscMessage Channel::getMessageStrongPeakNorm (int numChannel) {
+ofxOscMessage Channel::getMessageStrongPeakNorm () {
   // float strongPeakNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/strongPeakNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/strongPeakNorm");
   m.addFloatArg(strongPeakNorm);
   return m;
 }
 
-ofxOscMessage Channel::getMessageStrongDecay (int numChannel) {
+ofxOscMessage Channel::getMessageStrongDecay () {
   // float strongDecay;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/strongDecay");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/strongDecay");
   m.addFloatArg(strongDecay);
   return m;
 }
 
-ofxOscMessage Channel::getMessageStrongDecayNorm (int numChannel) {
+ofxOscMessage Channel::getMessageStrongDecayNorm () {
   // float strongDecayNorm;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/strongDecayNorm");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/strongDecayNorm");
   m.addFloatArg(strongDecayNorm);
   return m;
 }
 
-// ofxOscMessage Channel::getMessageSpectrum (int numChannel) {
+// ofxOscMessage Channel::getMessageSpectrum () {
 //   // vector<float> spectrum;
 //   ofxOscMessage m;
-//   m.setAddress("/audioIO/" + ofToString(numChannel) + "/spectrum");
+//   m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/spectrum");
 //   m.addFloatArg(spectrum);
 //   return m;
 // }
 
-// ofxOscMessage Channel::getMessageMelBands (int numChannel) {
+// ofxOscMessage Channel::getMessageMelBands () {
 //   // vector<float> melBands;
 //   ofxOscMessage m;
-//   m.setAddress("/audioIO/" + ofToString(numChannel) + "/melBands");
+//   m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/melBands");
 //   m.addFloatArg(melBands);
 //   return m;
 // }
 
-// ofxOscMessage Channel::getMessageMfcc (int numChannel) {
+// ofxOscMessage Channel::getMessageMfcc () {
 //   // vector<float> mfcc;
 //   ofxOscMessage m;
-//   m.setAddress("/audioIO/" + ofToString(numChannel) + "/mfcc");
+//   m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/mfcc");
 //   m.addFloatArg(mfcc);
 //   return m;
 // }
 
-// ofxOscMessage Channel::getMessageHpcp (int numChannel) {
+// ofxOscMessage Channel::getMessageHpcp () {
 //   // vector<float> hpcp;
 //   ofxOscMessage m;
-//   m.setAddress("/audioIO/" + ofToString(numChannel) + "/hpcp");
+//   m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/hpcp");
 //   m.addFloatArg(hpcp);
 //   return m;
 // }
 
-// ofxOscMessage Channel::getMessageTristimulus (int numChannel) {
+// ofxOscMessage Channel::getMessageTristimulus () {
 //   // vector<float> tristimulus;
 //   ofxOscMessage m;
-//   m.setAddress("/audioIO/" + ofToString(numChannel) + "/tristimulus");
+//   m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/tristimulus");
 //   m.addFloatArg(tristimulus);
 //   return m;
 // }
 
-ofxOscMessage Channel::getMessageIsOnset (int numChannel) {
+ofxOscMessage Channel::getMessageIsOnset () {
   // bool isOnset;
   ofxOscMessage m;
-  m.setAddress("/audioIO/" + ofToString(numChannel) + "/isOnset");
+  m.setAddress("/audioIO/" + ofToString(numChannel + 1.0) + "/isOnset");
   m.addBoolArg(isOnset);
   return m;
 }
