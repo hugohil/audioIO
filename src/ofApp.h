@@ -11,6 +11,8 @@
 #define PORT 12345
 
 class ofApp : public ofBaseApp{
+  private:
+    ofTrueTypeFont verdana;
   public:
     void setup();
     void update();
