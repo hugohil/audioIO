@@ -5,8 +5,10 @@ void ofApp::setup(){
   ofBackground(34, 34, 34);
   ofSetFrameRate(60);
 
+  // ofxDatGuiLog::quiet();
+
   ofTrueTypeFont::setGlobalDpi(72);
-  verdana.load("gui_assets/fonts/verdana.ttf", 14, true, true);
+  verdana.load("gui_assets/fonts/verdana.ttf", 22, true, true);
 
   sender.setup(HOST, PORT);
 
@@ -20,6 +22,9 @@ void ofApp::setup(){
   audioSetupGUI->addHeader("DEVICE CONFIG");
   audioSetupGUI->addFooter();
   audioSetupGUI->addFRM();
+
+  ofxDatGuiSlider* RMSThresholdSlider = audioSetupGUI->addSlider("RMS threshold", 0.0, 1.0);
+  RMSThresholdSlider->bind(RMSThreshold);
 
   vector<string> deviceNames;
   for (vector<ofSoundDevice>::iterator device = deviceList.begin(); device != deviceList.end(); ++device) {
@@ -55,11 +60,13 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+  ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
+
   // get the analysis values for every input channel and send it
   for (int i = 0; i < inChannels; ++i) {
-    float rms = audioAnalyzer.getValue(RMS, 0);
+    float rms = audioAnalyzer.getValue(RMS, i);
 
-    if (rms > 0.0) {
+    if (rms > RMSThreshold) {
       ofxOscBundle bundle;
 
       channels[i].rms = rms;

@@ -42,6 +42,8 @@ class ofApp : public ofBaseApp{
     int outChannels;
     int inChannels;
 
+    float RMSThreshold;
+
     vector<Channel> channels;
 
     ofxDatGui* audioSetupGUI;
