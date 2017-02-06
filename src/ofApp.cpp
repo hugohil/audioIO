@@ -67,97 +67,122 @@ void ofApp::update(){
     float rms = audioAnalyzer.getValue(RMS, i);
 
     if (rms > RMSThreshold) {
-      ofxOscBundle bundle;
+      // ofxOscBundle bundle;
+      ofxOscMessage msg;
+      msg.setAddress("/audioIO/" + ofToString(i + 1.0));
 
-      channels[i].rms = rms;
-      ofxOscMessage messageRms = channels[i].getMessageRms();
-      bundle.addMessage(messageRms);
+      // channels[i].rms = rms;
+      msg.addFloatArg(rms);
+      // ofxOscMessage messageRms = channels[i].getMessageRms();
+      // bundle.addMessage(messageRms);
 
-      channels[i].power = audioAnalyzer.getValue(POWER, 0);
-      ofxOscMessage messagePower = channels[i].getMessagePower();
-      bundle.addMessage(messagePower);
+      // channels[i].power = audioAnalyzer.getValue(POWER, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(POWER, 0));
+      // ofxOscMessage messagePower = channels[i].getMessagePower();
+      // bundle.addMessage(messagePower);
 
-      channels[i].pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, 0);
-      ofxOscMessage messagePitchFreq = channels[i].getMessagePitchFreq();
-      bundle.addMessage(messagePitchFreq);
+      // channels[i].pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(PITCH_FREQ, 0));
+      // ofxOscMessage messagePitchFreq = channels[i].getMessagePitchFreq();
+      // bundle.addMessage(messagePitchFreq);
 
-      channels[i].pitchConf = audioAnalyzer.getValue(PITCH_CONFIDENCE, 0);
-      ofxOscMessage messagePitchConf = channels[i].getMessagePitchConf();
-      bundle.addMessage(messagePitchConf);
+      // channels[i].pitchConf = audioAnalyzer.getValue(PITCH_CONFIDENCE, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(PITCH_CONFIDENCE, 0));
+      // ofxOscMessage messagePitchConf = channels[i].getMessagePitchConf();
+      // bundle.addMessage(messagePitchConf);
 
-      channels[i].pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, 0);
-      ofxOscMessage messagePitchSalience = channels[i].getMessagePitchSalience();
-      bundle.addMessage(messagePitchSalience);
+      // channels[i].pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(PITCH_SALIENCE, 0));
+      // ofxOscMessage messagePitchSalience = channels[i].getMessagePitchSalience();
+      // bundle.addMessage(messagePitchSalience);
 
-      channels[i].inharmonicity = audioAnalyzer.getValue(INHARMONICITY, 0);
-      ofxOscMessage messageInharmonicity = channels[i].getMessageInharmonicity();
-      bundle.addMessage(messageInharmonicity);
+      // channels[i].inharmonicity = audioAnalyzer.getValue(INHARMONICITY, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(INHARMONICITY, 0));
+      // ofxOscMessage messageInharmonicity = channels[i].getMessageInharmonicity();
+      // bundle.addMessage(messageInharmonicity);
 
-      channels[i].hfc = audioAnalyzer.getValue(HFC, 0);
-      ofxOscMessage messageHfc = channels[i].getMessageHfc();
-      bundle.addMessage(messageHfc);
+      // channels[i].hfc = audioAnalyzer.getValue(HFC, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(HFC, 0));
+      // ofxOscMessage messageHfc = channels[i].getMessageHfc();
+      // bundle.addMessage(messageHfc);
 
-      channels[i].specComp = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0);
-      ofxOscMessage messageSpecComp = channels[i].getMessageSpecComp();
-      bundle.addMessage(messageSpecComp);
+      // channels[i].specComp = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0));
+      // ofxOscMessage messageSpecComp = channels[i].getMessageSpecComp();
+      // bundle.addMessage(messageSpecComp);
 
-      channels[i].centroid = audioAnalyzer.getValue(CENTROID, 0);
-      ofxOscMessage messageCentroid = channels[i].getMessageCentroid();
-      bundle.addMessage(messageCentroid);
+      // channels[i].centroid = audioAnalyzer.getValue(CENTROID, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(CENTROID, 0));
+      // ofxOscMessage messageCentroid = channels[i].getMessageCentroid();
+      // bundle.addMessage(messageCentroid);
 
-      channels[i].rollOff = audioAnalyzer.getValue(ROLL_OFF, 0);
-      ofxOscMessage messageRollOff = channels[i].getMessageRollOff();
-      bundle.addMessage(messageRollOff);
+      // channels[i].rollOff = audioAnalyzer.getValue(ROLL_OFF, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(ROLL_OFF, 0));
+      // ofxOscMessage messageRollOff = channels[i].getMessageRollOff();
+      // bundle.addMessage(messageRollOff);
 
-      channels[i].oddToEven = audioAnalyzer.getValue(ODD_TO_EVEN, 0);
-      ofxOscMessage messageOddToEven = channels[i].getMessageOddToEven();
-      bundle.addMessage(messageOddToEven);
+      // channels[i].oddToEven = audioAnalyzer.getValue(ODD_TO_EVEN, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(ODD_TO_EVEN, 0));
+      // ofxOscMessage messageOddToEven = channels[i].getMessageOddToEven();
+      // bundle.addMessage(messageOddToEven);
 
-      channels[i].strongPeak = audioAnalyzer.getValue(STRONG_PEAK, 0);
-      ofxOscMessage messageStrongPeak = channels[i].getMessageStrongPeak();
-      bundle.addMessage(messageStrongPeak);
+      // channels[i].strongPeak = audioAnalyzer.getValue(STRONG_PEAK, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(STRONG_PEAK, 0));
+      // ofxOscMessage messageStrongPeak = channels[i].getMessageStrongPeak();
+      // bundle.addMessage(messageStrongPeak);
 
-      channels[i].strongDecay = audioAnalyzer.getValue(STRONG_DECAY, 0);
-      ofxOscMessage messageStrongDecay = channels[i].getMessageStrongDecay();
-      bundle.addMessage(messageStrongDecay);
+      // channels[i].strongDecay = audioAnalyzer.getValue(STRONG_DECAY, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(STRONG_DECAY, 0));
+      // ofxOscMessage messageStrongDecay = channels[i].getMessageStrongDecay();
+      // bundle.addMessage(messageStrongDecay);
 
-      channels[i].pitchFreqNorm = audioAnalyzer.getValue(PITCH_FREQ, 0);
-      ofxOscMessage messagePitchFreqNorm = channels[i].getMessagePitchFreqNorm();
-      bundle.addMessage(messagePitchFreqNorm);
+      // channels[i].pitchFreqNorm = audioAnalyzer.getValue(PITCH_FREQ, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(PITCH_FREQ, 0));
+      // ofxOscMessage messagePitchFreqNorm = channels[i].getMessagePitchFreqNorm();
+      // bundle.addMessage(messagePitchFreqNorm);
 
-      channels[i].hfcNorm = audioAnalyzer.getValue(HFC, 0);
-      ofxOscMessage messageHfcNorm = channels[i].getMessageHfcNorm();
-      bundle.addMessage(messageHfcNorm);
+      // channels[i].hfcNorm = audioAnalyzer.getValue(HFC, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(HFC, 0));
+      // ofxOscMessage messageHfcNorm = channels[i].getMessageHfcNorm();
+      // bundle.addMessage(messageHfcNorm);
 
-      channels[i].specCompNorm = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0);
-      ofxOscMessage messageSpecCompNorm = channels[i].getMessageSpecCompNorm();
-      bundle.addMessage(messageSpecCompNorm);
+      // channels[i].specCompNorm = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, 0));
+      // ofxOscMessage messageSpecCompNorm = channels[i].getMessageSpecCompNorm();
+      // bundle.addMessage(messageSpecCompNorm);
 
-      channels[i].centroidNorm = audioAnalyzer.getValue(CENTROID, 0);
-      ofxOscMessage messageCentroidNorm = channels[i].getMessageCentroidNorm();
-      bundle.addMessage(messageCentroidNorm);
+      // channels[i].centroidNorm = audioAnalyzer.getValue(CENTROID, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(CENTROID, 0));
+      // ofxOscMessage messageCentroidNorm = channels[i].getMessageCentroidNorm();
+      // bundle.addMessage(messageCentroidNorm);
 
-      channels[i].rollOffNorm = audioAnalyzer.getValue(ROLL_OFF, 0);
-      ofxOscMessage messageRollOffNorm = channels[i].getMessageRollOffNorm();
-      bundle.addMessage(messageRollOffNorm);
+      // channels[i].rollOffNorm = audioAnalyzer.getValue(ROLL_OFF, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(ROLL_OFF, 0));
+      // ofxOscMessage messageRollOffNorm = channels[i].getMessageRollOffNorm();
+      // bundle.addMessage(messageRollOffNorm);
 
-      channels[i].oddToEvenNorm = audioAnalyzer.getValue(ODD_TO_EVEN, 0);
-      ofxOscMessage messageOddToEvenNorm = channels[i].getMessageOddToEvenNorm();
-      bundle.addMessage(messageOddToEvenNorm);
+      // channels[i].oddToEvenNorm = audioAnalyzer.getValue(ODD_TO_EVEN, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(ODD_TO_EVEN, 0));
+      // ofxOscMessage messageOddToEvenNorm = channels[i].getMessageOddToEvenNorm();
+      // bundle.addMessage(messageOddToEvenNorm);
 
-      channels[i].strongPeakNorm = audioAnalyzer.getValue(STRONG_PEAK, 0);
-      ofxOscMessage messageStrongPeakNorm = channels[i].getMessageStrongPeakNorm();
-      bundle.addMessage(messageStrongPeakNorm);
+      // channels[i].strongPeakNorm = audioAnalyzer.getValue(STRONG_PEAK, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(STRONG_PEAK, 0));
+      // ofxOscMessage messageStrongPeakNorm = channels[i].getMessageStrongPeakNorm();
+      // bundle.addMessage(messageStrongPeakNorm);
 
-      channels[i].strongDecayNorm = audioAnalyzer.getValue(STRONG_DECAY, 0);
-      ofxOscMessage messageStrongDecayNorm = channels[i].getMessageStrongDecayNorm();
-      bundle.addMessage(messageStrongDecayNorm);
+      // channels[i].strongDecayNorm = audioAnalyzer.getValue(STRONG_DECAY, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(STRONG_DECAY, 0));
+      // ofxOscMessage messageStrongDecayNorm = channels[i].getMessageStrongDecayNorm();
+      // bundle.addMessage(messageStrongDecayNorm);
 
-      channels[i].dissonance = audioAnalyzer.getValue(DISSONANCE, 0);
-      ofxOscMessage messageDissonance = channels[i].getMessageDissonance();
-      bundle.addMessage(messageDissonance);
+      // channels[i].dissonance = audioAnalyzer.getValue(DISSONANCE, 0);
+      msg.addFloatArg(audioAnalyzer.getValue(DISSONANCE, 0));
+      // ofxOscMessage messageDissonance = channels[i].getMessageDissonance();
+      // bundle.addMessage(messageDissonance);
 
-      sender.sendBundle(bundle);
+      // sender.sendBundle(bundle);
+      sender.sendMessage(msg);
 
       // Those are vectors. Will see later how to send them through OSC.
       // channels[i].spectrum = audioAnalyzer.getValues(SPECTRUM, 0);
