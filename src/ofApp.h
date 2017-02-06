@@ -3,12 +3,11 @@
 #include "ofMain.h"
 #include "ofxAudioAnalyzer.h"
 #include "ofxDatGui.h"
-#include "ofxOsc.h"
-
-#include "channel.h"
+#include "ofxSocketIO.h"
+#include "ofxSocketIOData.h"
 
 #define HOST "hibou.local"
-#define PORT 12345
+#define PORT 8888
 
 class ofApp : public ofBaseApp{
   private:
@@ -44,9 +43,8 @@ class ofApp : public ofBaseApp{
 
     float RMSThreshold;
 
-    vector<Channel> channels;
-
     ofxDatGui* audioSetupGUI;
 
-    ofxOscSender sender;
+    ofxSocketIO socketIO;
+    void onConnection();
 };

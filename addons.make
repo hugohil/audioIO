@@ -1,4 +1,4 @@
 ofxAudioAnalyzer
 ofxAudioDecoder
 ofxDatGui
-ofxOsc
+ofxSocketIO
