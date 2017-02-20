@@ -42,6 +42,10 @@ class ofApp : public ofBaseApp{
     int inChannels;
 
     float RMSThreshold;
+    float onSetsAlpha = 1.0;
+    float onSetsSilenceThreshold = 0.2;
+    float onSetsUseTimeThreshold = true;
+    float onSetsTimeThreshold = 100.0;
 
     ofxDatGui* audioSetupGUI;
 

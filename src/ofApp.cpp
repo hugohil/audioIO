@@ -29,6 +29,20 @@ void ofApp::setup(){
   ofxDatGuiSlider* RMSThresholdSlider = audioSetupGUI->addSlider("RMS threshold", 0.0, 1.0);
   RMSThresholdSlider->bind(RMSThreshold);
 
+  ofxDatGuiFolder* onsets = audioSetupGUI->addFolder("onsets", ofColor::white);
+
+  ofxDatGuiSlider* onSetsAlphaSlider = onsets->addSlider("alpha", 0.0, 1.0);
+  onSetsAlphaSlider->bind(onSetsAlpha);
+
+  ofxDatGuiSlider* onSetsSilenceThresholdSlider = onsets->addSlider("silenceThreshold", 0.0, 1.0);
+  onSetsSilenceThresholdSlider->bind(onSetsSilenceThreshold);
+
+  ofxDatGuiToggle* onSetsUseTimeThresholdSlider = onsets->addToggle("useTimeThreshold", onSetsUseTimeThreshold);
+  // onSetsUseTimeThresholdSlider->bind(onSetsUseTimeThreshold);
+
+  ofxDatGuiSlider* onSetsTimeThresholdSlider = onsets->addSlider("timeThreshold", 0.0, 1000.0);
+  onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
+
   vector<string> deviceNames;
   for (vector<ofSoundDevice>::iterator device = deviceList.begin(); device != deviceList.end(); ++device) {
     deviceNames.push_back(device->name);
@@ -115,7 +129,9 @@ void ofApp::update(){
       float strongDecayNorm = audioAnalyzer.getValue(STRONG_DECAY, i);
       param += "\"strongDecayNorm\":" + ofToString(strongDecayNorm) + ",";
       float dissonance = audioAnalyzer.getValue(DISSONANCE, i);
-      param += "\"dissonance\":" + ofToString(dissonance);
+      param += "\"dissonance\":" + ofToString(dissonance) + ",";;
+      float isOnset = audioAnalyzer.getOnsetValue(i);
+      param += "\"isOnset\":" + ofToString(isOnset);
 
       param += "}";
 
@@ -138,11 +154,7 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::audioIn(ofSoundBuffer &inBuffer){
-  float alpha = 1.0;
-  float silenceThreshold = 0.2;
-  float useTimeThreshold = true;
-  float timeThreshold = 100.0; // in ms.
-  audioAnalyzer.setOnsetsParameters(0, alpha, silenceThreshold, timeThreshold, useTimeThreshold);
+  audioAnalyzer.setOnsetsParameters(0, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
   audioAnalyzer.analyze(inBuffer);
 }
 
