@@ -125,8 +125,8 @@ void ofApp::audioIn(ofSoundBuffer &inBuffer){
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-  audioAnalyzer.exit();
   soundStream.stop();
+  audioAnalyzer.exit();
 }
 
 //--------------------------------------------------------------
