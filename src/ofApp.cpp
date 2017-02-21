@@ -10,9 +10,6 @@ void ofApp::setup(){
 
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
 
-  // ofxDatGuiLog::quiet();
-
-  // ofTrueTypeFont::setGlobalDpi(72);
   verdana.load("gui_assets/fonts/verdana.ttf", 22, true, true);
 
   soundStream.printDeviceList();
@@ -21,6 +18,8 @@ void ofApp::setup(){
   sampleRate = 44100;
   bufferSize = 512;
 
+  ofxDatGuiLog::quiet();
+
   audioSetupGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
   audioSetupGUI->addHeader("DEVICE CONFIG");
   audioSetupGUI->addFooter();
@@ -28,6 +27,9 @@ void ofApp::setup(){
 
   ofxDatGuiSlider* RMSThresholdSlider = audioSetupGUI->addSlider("RMS threshold", 0.0, 1.0);
   RMSThresholdSlider->bind(RMSThreshold);
+
+  ofxDatGuiSlider* smoothingSlider = audioSetupGUI->addSlider("smoothing", 0.0, 1.0);
+  smoothingSlider->bind(smoothing);
 
   ofxDatGuiFolder* onsets = audioSetupGUI->addFolder("onsets", ofColor::white);
 
@@ -38,7 +40,6 @@ void ofApp::setup(){
   onSetsSilenceThresholdSlider->bind(onSetsSilenceThreshold);
 
   ofxDatGuiToggle* onSetsUseTimeThresholdSlider = onsets->addToggle("useTimeThreshold", onSetsUseTimeThreshold);
-  // onSetsUseTimeThresholdSlider->bind(onSetsUseTimeThreshold);
 
   ofxDatGuiSlider* onSetsTimeThresholdSlider = onsets->addSlider("timeThreshold", 0.0, 1000.0);
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
@@ -81,55 +82,26 @@ void ofApp::update(){
 
   // get the analysis values for every input channel and send it
   for (int i = 0; i < inChannels; ++i) {
-    float rms = audioAnalyzer.getValue(RMS, i);
+    float rms = audioAnalyzer.getValue(RMS, i, smoothing);
 
     if (rms > RMSThreshold) {
-      // string param = "{ \"channel\": " + ofToString(i) + ",";
       string param = "{";
 
       param += "\"rms\":" + ofToString(rms) + ",";
-      float power = audioAnalyzer.getValue(POWER, i);
+      float power = audioAnalyzer.getValue(POWER, i, smoothing);
       param += "\"power\":" + ofToString(power) + ",";
-      // float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i);
-      // param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
-      // float pitchConf = audioAnalyzer.getValue(PITCH_CONFIDENCE, i);
-      // param += "\"pitchConf\":" + ofToString(pitchConf) + ",";
+      float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i);
+      param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
       float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
       param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
       float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
       param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
-      // float hfc = audioAnalyzer.getValue(HFC, i);
-      // param += "\"hfc\":" + ofToString(hfc) + ",";
-      // float specComp = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, i);
-      // param += "\"specComp\":" + ofToString(specComp) + ",";
-      // float centroid = audioAnalyzer.getValue(CENTROID, i);
-      // param += "\"centroid\":" + ofToString(centroid) + ",";
-      // float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
-      // param += "\"rollOff\":" + ofToString(rollOff) + ",";
-      // float oddToEven = audioAnalyzer.getValue(ODD_TO_EVEN, i);
-      // param += "\"oddToEven\":" + ofToString(oddToEven) + ",";
-      // float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
-      // param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
-      // float strongDecay = audioAnalyzer.getValue(STRONG_DECAY, i);
-      // param += "\"strongDecay\":" + ofToString(strongDecay) + ",";
-      float pitchFreqNorm = audioAnalyzer.getValue(PITCH_FREQ, i);
-      param += "\"pitchFreqNorm\":" + ofToString(pitchFreqNorm) + ",";
-      float hfcNorm = audioAnalyzer.getValue(HFC, i);
-      param += "\"hfcNorm\":" + ofToString(hfcNorm) + ",";
-      float specCompNorm = audioAnalyzer.getValue(SPECTRAL_COMPLEXITY, i);
-      param += "\"specCompNorm\":" + ofToString(specCompNorm) + ",";
-      float centroidNorm = audioAnalyzer.getValue(CENTROID, i);
-      param += "\"centroidNorm\":" + ofToString(centroidNorm) + ",";
-      float rollOffNorm = audioAnalyzer.getValue(ROLL_OFF, i);
-      param += "\"rollOffNorm\":" + ofToString(rollOffNorm) + ",";
-      float oddToEvenNorm = audioAnalyzer.getValue(ODD_TO_EVEN, i);
-      param += "\"oddToEvenNorm\":" + ofToString(oddToEvenNorm) + ",";
-      float strongPeakNorm = audioAnalyzer.getValue(STRONG_PEAK, i);
-      param += "\"strongPeakNorm\":" + ofToString(strongPeakNorm) + ",";
-      float strongDecayNorm = audioAnalyzer.getValue(STRONG_DECAY, i);
-      param += "\"strongDecayNorm\":" + ofToString(strongDecayNorm) + ",";
-      float dissonance = audioAnalyzer.getValue(DISSONANCE, i);
-      param += "\"dissonance\":" + ofToString(dissonance) + ",";;
+      float centroid = audioAnalyzer.getValue(CENTROID, i);
+      param += "\"centroid\":" + ofToString(centroid) + ",";
+      float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
+      param += "\"rollOff\":" + ofToString(rollOff) + ",";
+      float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
+      param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
       float isOnset = audioAnalyzer.getOnsetValue(i);
       param += "\"isOnset\":" + ofToString(isOnset);
 
@@ -137,13 +109,6 @@ void ofApp::update(){
 
       string eventName = "channel-" + ofToString(i);
       socketIO.emit(eventName, param);
-
-      // Those are vectors. Will see later how to send them through OSC.
-      // vector spectrum = audioAnalyzer.getValues(SPECTRUM, 0);
-      // vector melBands = audioAnalyzer.getValues(MEL_BANDS, 0);
-      // vector mfcc = audioAnalyzer.getValues(MFCC, 0);
-      // vector hpcp = audioAnalyzer.getValues(HPCP, 0);
-      // vector tristimulus = audioAnalyzer.getValues(TRISTIMULUS, 0);
     }
   }
 }
