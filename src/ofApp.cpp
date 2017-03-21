@@ -90,13 +90,13 @@ void ofApp::update(){
       param += "\"rms\":" + ofToString(rms) + ",";
       float power = audioAnalyzer.getValue(POWER, i, smoothing);
       param += "\"power\":" + ofToString(power) + ",";
-      float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i);
+      float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
       param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
       float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
       param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
       float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
       param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
-      float centroid = audioAnalyzer.getValue(CENTROID, i);
+      float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
       param += "\"centroid\":" + ofToString(centroid) + ",";
       float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
       param += "\"rollOff\":" + ofToString(rollOff) + ",";
