@@ -5,10 +5,9 @@
 #include "ofxDatGui.h"
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
+#include "gui/theme.h"
 
 class ofApp : public ofBaseApp{
-  private:
-    ofTrueTypeFont verdana;
   public:
     void setup();
     void update();

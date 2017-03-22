@@ -5,6 +5,7 @@ obj/
 *.o
 *.app
 */x64/
+bin/
 
 ### Xcode ###
 # Xcode

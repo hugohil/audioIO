@@ -2,10 +2,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+  ofSetDataPathRoot("../Resources/data/");
+
   ofBackground(34, 34, 34);
   ofSetFrameRate(60);
-
-  verdana.load("gui_assets/fonts/verdana.ttf", 22, true, true);
 
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
@@ -16,6 +16,7 @@ void ofApp::setup(){
   ofxDatGuiLog::quiet();
 
   audioSetupGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+  audioSetupGUI->setTheme(new ofxDatGuiThemeFUBAR());
   audioSetupGUI->addHeader("DEVICE CONFIG");
   audioSetupGUI->addFooter();
 

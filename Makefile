@@ -11,3 +11,7 @@ endif
 
 # call the project makefile!
 include $(OF_ROOT)/libs/openFrameworksCompiled/project/makefileCommon/compile.project.mk
+
+install:
+	cp -r data bin/audioIO.app/Contents/Resources
+	cp audioIO-Info.plist bin/audioIO.app/Contents/Info.plist
