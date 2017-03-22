@@ -15,19 +15,26 @@ void ofApp::setup(){
 
   ofxDatGuiLog::quiet();
 
-  audioSetupGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
-  audioSetupGUI->setTheme(new ofxDatGuiThemeFUBAR());
-  audioSetupGUI->addHeader("DEVICE CONFIG");
-  audioSetupGUI->addFooter();
+  networkGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
+  networkGUI->addHeader("Network");
+  networkGUI->setTheme(new ofxDatGuiThemeFUBAR());
 
-  ofxDatGuiSlider* RMSThresholdSlider = audioSetupGUI->addSlider("RMS threshold", 0.0, 1.0);
+  deviceGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_CENTER);
+  deviceGUI->addHeader("Devices");
+  deviceGUI->setTheme(new ofxDatGuiThemeFUBAR());
+
+  audioGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+  audioGUI->addHeader("Audio");
+  audioGUI->setTheme(new ofxDatGuiThemeFUBAR());
+
+  ofxDatGuiSlider* RMSThresholdSlider = audioGUI->addSlider("RMS threshold", 0.0, 1.0);
   RMSThresholdSlider->bind(RMSThreshold);
 
-  ofxDatGuiSlider* smoothingSlider = audioSetupGUI->addSlider("smoothing", 0.0, 1.0);
+  ofxDatGuiSlider* smoothingSlider = audioGUI->addSlider("smoothing", 0.0, 1.0);
   smoothingSlider->bind(smoothing);
 
   // Onsets
-  ofxDatGuiFolder* onsets = audioSetupGUI->addFolder("onsets", ofColor::white);
+  ofxDatGuiFolder* onsets = audioGUI->addFolder("onsets", ofColor::white);
 
   ofxDatGuiSlider* onSetsAlphaSlider = onsets->addSlider("alpha", 0.0, 1.0);
   onSetsAlphaSlider->bind(onSetsAlpha);
@@ -45,14 +52,12 @@ void ofApp::setup(){
   for (vector<ofSoundDevice>::iterator device = deviceList.begin(); device != deviceList.end(); ++device) {
     deviceNames.push_back(device->name);
   }
-  audioSetupGUI->addDropdown("devices", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
+  deviceGUI->addDropdown("devices", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
 
   // Network
-  ofxDatGuiFolder* network = audioSetupGUI->addFolder("network", ofColor::white);
-  hostInput = network->addTextInput("HOST", "127.0.0.1");
-  portInput = network->addTextInput("PORT", "8888");
-
-  connectButton = audioSetupGUI->addButton("connect");
+  hostInput = networkGUI->addTextInput("HOST", "127.0.0.1");
+  portInput = networkGUI->addTextInput("PORT", "8888");
+  connectButton = networkGUI->addButton("connect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
 }
@@ -98,7 +103,6 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
   ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
 
   // get the analysis values for every input channel and send it

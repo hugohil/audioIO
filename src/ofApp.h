@@ -53,7 +53,9 @@ class ofApp : public ofBaseApp{
     float onSetsTimeThreshold = 100.0;
     float smoothing = 0.75;
 
-    ofxDatGui* audioSetupGUI;
+    ofxDatGui* networkGUI;
+    ofxDatGui* deviceGUI;
+    ofxDatGui* audioGUI;
 
     ofxSocketIO socketIO;
     void onConnection();
