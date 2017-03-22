@@ -55,7 +55,7 @@ void ofApp::setup(){
   deviceGUI->addDropdown("devices", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
 
   // Network
-  connectionLabel = networkGUI->addLabel(socketIO.currentStatus);
+  connectionLabel = networkGUI->addLabel(socketIO.getStatus());
   hostInput = networkGUI->addTextInput("HOST", "127.0.0.1");
   portInput = networkGUI->addTextInput("PORT", "8888");
   connectButton = networkGUI->addButton("connect/disconnect");
@@ -65,7 +65,7 @@ void ofApp::setup(){
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e) {
   if (e.target == connectButton){
-    if (socketIO.currentStatus == "close") {
+    if (socketIO.getStatus() == "closed") {
       connect();
     } else {
       socketIO.closeConnection();
@@ -109,7 +109,7 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
 //--------------------------------------------------------------
 void ofApp::update(){
   ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
-  connectionLabel->setLabel(socketIO.currentStatus);
+  connectionLabel->setLabel(socketIO.getStatus());
 
   // get the analysis values for every input channel and send it
   for (int i = 0; i < inChannels; ++i) {
