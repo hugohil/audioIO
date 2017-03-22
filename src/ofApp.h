@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
 
     void connect();
     ofxDatGuiButton* connectButton;
+    ofxDatGuiLabel* connectionLabel;
     ofxDatGuiTextInput* hostInput;
     ofxDatGuiTextInput* portInput;
     string host;
