@@ -10,9 +10,6 @@ void ofApp::setup(){
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
 
-  sampleRate = 44100;
-  bufferSize = 512;
-
   ofxDatGuiLog::quiet();
 
   networkGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
@@ -48,11 +45,19 @@ void ofApp::setup(){
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
 
   // Devices
+  streamLabel = deviceGUI->addLabel(ofToString(isStreamActive));
+
+  deviceGUI->addDropdown(ofToString(sampleRate), sampleRates)->onDropdownEvent(this, &ofApp::onSampleRateDropdownEvent);
+  deviceGUI->addDropdown(ofToString(bufferSize), bufferSizes)->onDropdownEvent(this, &ofApp::onBufferSizeDropdownEvent);
+
   vector<string> deviceNames;
   for (vector<ofSoundDevice>::iterator device = deviceList.begin(); device != deviceList.end(); ++device) {
     deviceNames.push_back(device->name);
   }
-  deviceGUI->addDropdown("devices", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
+  deviceGUI->addDropdown("devices available", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
+
+  startButton = deviceGUI->addButton("start/stop");
+  startButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
   // Network
   connectionLabel = networkGUI->addLabel(socketIO.getStatus());
@@ -70,6 +75,8 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e) {
     } else {
       socketIO.closeConnection();
     }
+  } else if (e.target == startButton) {
+    toggleStream();
   }
 }
 
@@ -87,59 +94,73 @@ void ofApp::onConnection(){
   socketIO.emit(key, message);
 }
 
+void ofApp::toggleStream(){
+  if (isStreamActive) {
+    isStreamActive = false;
+    soundStream.stop();
+  } else {
+    soundStream.setup(this, outChannels, inChannels, sampleRate, bufferSize, 3);
+    isStreamActive = true;
+  }
+}
+
 //--------------------------------------------------------------
 void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
-  soundStream.stop();
   audioAnalyzer.exit();
-
-  ofSoundDevice device = deviceList[e.child];
+  device = deviceList[e.child];
 
   // get device config
   outChannels = device.outputChannels;
   inChannels = device.inputChannels;
 
-  // setup the sound stream
   soundStream.setDevice(device);
-  soundStream.setup(this, outChannels, inChannels, sampleRate, bufferSize, 3);
-  // setup ofxAudioAnalyzer with the SAME PARAMETERS
   audioAnalyzer.setup(sampleRate, bufferSize, inChannels);
 }
 
+void ofApp::onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e){
+  sampleRate = stof(sampleRates[e.child]);
+}
+void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
+  bufferSize = stof(bufferSizes[e.child]);
+}
 
 //--------------------------------------------------------------
 void ofApp::update(){
   ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
   connectionLabel->setLabel(socketIO.getStatus());
+  streamLabel->setLabel(isStreamActive ? "started" : "stopped");
 
   // get the analysis values for every input channel and send it
-  for (int i = 0; i < inChannels; ++i) {
-    float rms = audioAnalyzer.getValue(RMS, i, smoothing);
+  if (isStreamActive) {
+    for (int i = 0; i < inChannels; ++i) {
+      float rms = audioAnalyzer.getValue(RMS, i, smoothing);
 
-    if (rms > RMSThreshold) {
-      string param = "{";
+      if (rms > RMSThreshold) {
+        string param = "{";
 
-      param += "\"rms\":" + ofToString(rms) + ",";
-      float power = audioAnalyzer.getValue(POWER, i, smoothing);
-      param += "\"power\":" + ofToString(power) + ",";
-      float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
-      param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
-      float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
-      param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
-      float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
-      param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
-      float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
-      param += "\"centroid\":" + ofToString(centroid) + ",";
-      float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
-      param += "\"rollOff\":" + ofToString(rollOff) + ",";
-      float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
-      param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
-      float isOnset = audioAnalyzer.getOnsetValue(i);
-      param += "\"isOnset\":" + ofToString(isOnset);
+        param += "\"rms\":" + ofToString(rms) + ",";
+        float power = audioAnalyzer.getValue(POWER, i, smoothing);
+        param += "\"power\":" + ofToString(power) + ",";
+        float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
+        param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
+        float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
+        param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
+        float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
+        param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
+        float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
+        param += "\"centroid\":" + ofToString(centroid) + ",";
+        float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
+        param += "\"rollOff\":" + ofToString(rollOff) + ",";
+        float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
+        param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
+        float isOnset = audioAnalyzer.getOnsetValue(i);
+        param += "\"isOnset\":" + ofToString(isOnset);
 
-      param += "}";
+        param += "}";
 
-      string eventName = "channel-" + ofToString(i);
-      socketIO.emit(eventName, param);
+        string eventName = "channel-" + ofToString(i);
+        socketIO.emit(eventName, param);
+      }
     }
   }
 }
@@ -150,14 +171,17 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::audioIn(ofSoundBuffer &inBuffer){
-  audioAnalyzer.setOnsetsParameters(0, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
-  audioAnalyzer.analyze(inBuffer);
+  if (isStreamActive) {
+    audioAnalyzer.setOnsetsParameters(0, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
+    audioAnalyzer.analyze(inBuffer);
+  }
 }
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-  soundStream.stop();
+  isStreamActive = false;
   audioAnalyzer.exit();
+  soundStream.close();
 }
 
 //--------------------------------------------------------------

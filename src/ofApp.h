@@ -37,13 +37,22 @@ class ofApp : public ofBaseApp{
     string port;
 
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e);
 
     vector<ofSoundDevice> deviceList;
     ofSoundStream soundStream;
     ofxAudioAnalyzer audioAnalyzer;
+    ofSoundDevice device;
+    ofxDatGuiButton* startButton;
+    bool isStreamActive = false;
+    ofxDatGuiLabel* streamLabel;
+    void toggleStream();
 
-    int sampleRate;
-    int bufferSize;
+    vector<string> sampleRates = { "8000", "16000", "32000", "44100", "48000", "96000" };
+    vector<string> bufferSizes = { "2048", "1024", "512", "256", "128", "64", "32", "16" };
+    int sampleRate = 44100;
+    int bufferSize = 256;
     int outChannels;
     int inChannels;
 
