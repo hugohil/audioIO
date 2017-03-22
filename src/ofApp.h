@@ -6,9 +6,6 @@
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
 
-#define HOST "hibou.local"
-#define PORT 8888
-
 class ofApp : public ofBaseApp{
   private:
     ofTrueTypeFont verdana;
@@ -29,6 +26,15 @@ class ofApp : public ofBaseApp{
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+
+    void onButtonEvent(ofxDatGuiButtonEvent e);
+
+    void connect();
+    ofxDatGuiButton* connectButton;
+    ofxDatGuiTextInput* hostInput;
+    ofxDatGuiTextInput* portInput;
+    string host;
+    string port;
 
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
 

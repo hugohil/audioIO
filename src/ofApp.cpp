@@ -5,11 +5,6 @@ void ofApp::setup(){
   ofBackground(34, 34, 34);
   ofSetFrameRate(60);
 
-  string address = "http://" + ofToString(HOST) + ":" + ofToString(PORT);
-  socketIO.setup(address);
-
-  ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
-
   verdana.load("gui_assets/fonts/verdana.ttf", 22, true, true);
 
   soundStream.printDeviceList();
@@ -23,7 +18,6 @@ void ofApp::setup(){
   audioSetupGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
   audioSetupGUI->addHeader("DEVICE CONFIG");
   audioSetupGUI->addFooter();
-  audioSetupGUI->addFRM();
 
   ofxDatGuiSlider* RMSThresholdSlider = audioSetupGUI->addSlider("RMS threshold", 0.0, 1.0);
   RMSThresholdSlider->bind(RMSThreshold);
@@ -31,6 +25,7 @@ void ofApp::setup(){
   ofxDatGuiSlider* smoothingSlider = audioSetupGUI->addSlider("smoothing", 0.0, 1.0);
   smoothingSlider->bind(smoothing);
 
+  // Onsets
   ofxDatGuiFolder* onsets = audioSetupGUI->addFolder("onsets", ofColor::white);
 
   ofxDatGuiSlider* onSetsAlphaSlider = onsets->addSlider("alpha", 0.0, 1.0);
@@ -44,11 +39,35 @@ void ofApp::setup(){
   ofxDatGuiSlider* onSetsTimeThresholdSlider = onsets->addSlider("timeThreshold", 0.0, 1000.0);
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
 
+  // Devices
   vector<string> deviceNames;
   for (vector<ofSoundDevice>::iterator device = deviceList.begin(); device != deviceList.end(); ++device) {
     deviceNames.push_back(device->name);
   }
   audioSetupGUI->addDropdown("devices", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
+
+  // Network
+  ofxDatGuiFolder* network = audioSetupGUI->addFolder("network", ofColor::white);
+  hostInput = network->addTextInput("HOST", "127.0.0.1");
+  portInput = network->addTextInput("PORT", "8888");
+
+  connectButton = audioSetupGUI->addButton("connect");
+  connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
+  ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
+}
+
+void ofApp::onButtonEvent(ofxDatGuiButtonEvent e) {
+  if (e.target == connectButton){
+    connect();
+  }
+}
+
+void ofApp::connect(){
+  host = hostInput->getText();
+  port = portInput->getText();
+
+  string address = "http://" + ofToString(host) + ":" + ofToString(port);
+  socketIO.setup(address);
 }
 
 void ofApp::onConnection(){
@@ -78,6 +97,7 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
   ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
 
   // get the analysis values for every input channel and send it
