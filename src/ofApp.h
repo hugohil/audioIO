@@ -9,6 +9,8 @@
 
 class ofApp : public ofBaseApp{
   public:
+    vector<string> arguments;
+
     void setup();
     void update();
     void draw();
@@ -33,13 +35,14 @@ class ofApp : public ofBaseApp{
     ofxDatGuiLabel* connectionLabel;
     ofxDatGuiTextInput* hostInput;
     ofxDatGuiTextInput* portInput;
-    string host;
-    string port;
+    string host = "127.0.0.1";
+    string port = "8888";
 
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
     void onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e);
     void onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e);
 
+    int deviceIndex = 0;
     vector<ofSoundDevice> deviceList;
     ofSoundStream soundStream;
     ofxAudioAnalyzer audioAnalyzer;

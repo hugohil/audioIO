@@ -2,12 +2,17 @@
 #include "ofApp.h"
 
 //========================================================================
-int main( ){
-  ofSetupOpenGL(840,360,OF_WINDOW);     // <-------- setup the GL context
+int main (int argc, char *argv[]) {
+  ofSetupOpenGL(840, 360, OF_WINDOW);
 
-  // this kicks off the running of my app
-  // can be OF_WINDOW or OF_FULLSCREEN
-  // pass in width and height too:
-  ofRunApp(new ofApp());
+  vector<string> args;
+  if(argc > 1){
+    for(int i = 0; i < argc; i++){
+      args.push_back(argv[i]);
+    }
+  }
 
+  ofApp *app = new ofApp();
+  app->arguments = args;
+  ofRunApp(app);
 }

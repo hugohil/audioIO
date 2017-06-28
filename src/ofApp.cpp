@@ -10,6 +10,17 @@ void ofApp::setup(){
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
 
+  for (int i = 0; i < arguments.size(); i++){
+    if (arguments[i] == "--device") {
+      deviceIndex = stoi(arguments[i + 1]);
+      device = deviceList[deviceIndex];
+    } else if (arguments[i] == "--host") {
+      host = arguments[i + 1];
+    } else if (arguments[i] == "--port") {
+      port = arguments[i + 1];
+    }
+  }
+
   ofxDatGuiLog::quiet();
 
   networkGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
@@ -61,8 +72,8 @@ void ofApp::setup(){
 
   // Network
   connectionLabel = networkGUI->addLabel(socketIO.getStatus());
-  hostInput = networkGUI->addTextInput("HOST", "127.0.0.1");
-  portInput = networkGUI->addTextInput("PORT", "8888");
+  hostInput = networkGUI->addTextInput("HOST", host);
+  portInput = networkGUI->addTextInput("PORT", port);
   connectButton = networkGUI->addButton("connect/disconnect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
@@ -128,7 +139,7 @@ void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
 void ofApp::update(){
   ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
   connectionLabel->setLabel(socketIO.getStatus());
-  streamLabel->setLabel(isStreamActive ? "started" : "stopped");
+  streamLabel->setLabel(isStreamActive ? device.name + " | started" : device.name + " | stopped");
 
   // get the analysis values for every input channel and send it
   if (isStreamActive) {
@@ -167,6 +178,12 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+  ofSetColor(0,255,0);
+  ofDrawBitmapString("App arguments: ", 20.0f, 20.0f);
+  ofSetColor(255);
+  for (int i = 0; i < arguments.size(); i++){
+    ofDrawBitmapString(arguments[i], 20.0f, 60.0f + (20*i));
+  }
 }
 
 //--------------------------------------------------------------
