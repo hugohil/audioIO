@@ -18,6 +18,8 @@ void ofApp::setup(){
       host = arguments[i + 1];
     } else if (arguments[i] == "--port") {
       port = arguments[i + 1];
+    } else if (arguments[i] == "--autostart") {
+      autostart = true;
     }
   }
 
@@ -77,6 +79,12 @@ void ofApp::setup(){
   connectButton = networkGUI->addButton("connect/disconnect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
+
+  if (autostart) {
+    connect();
+    setupDevice();
+    toggleStream();
+  }
 }
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e) {
@@ -120,6 +128,10 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
   audioAnalyzer.exit();
   device = deviceList[e.child];
 
+  setupDevice();
+}
+
+void ofApp::setupDevice () {
   // get device config
   outChannels = device.outputChannels;
   inChannels = device.inputChannels;

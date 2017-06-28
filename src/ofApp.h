@@ -51,6 +51,7 @@ class ofApp : public ofBaseApp{
     bool isStreamActive = false;
     ofxDatGuiLabel* streamLabel;
     void toggleStream();
+    void setupDevice();
 
     vector<string> sampleRates = { "8000", "16000", "32000", "44100", "48000", "96000" };
     vector<string> bufferSizes = { "2048", "1024", "512", "256", "128", "64", "32", "16" };
@@ -69,6 +70,8 @@ class ofApp : public ofBaseApp{
     ofxDatGui* networkGUI;
     ofxDatGui* deviceGUI;
     ofxDatGui* audioGUI;
+
+    bool autostart = false;
 
     ofxSocketIO socketIO;
     void onConnection();
