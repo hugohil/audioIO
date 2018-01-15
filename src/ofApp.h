@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
     void onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e);
     void onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e);
 
     int deviceIndex = 0;
     vector<ofSoundDevice> deviceList;
@@ -58,7 +59,8 @@ class ofApp : public ofBaseApp{
     int sampleRate = 44100;
     int bufferSize = 256;
     int outChannels;
-    int inChannels;
+    int inChannels = 2;
+    int activeChannels = 1;
 
     float RMSThreshold = 0.1;
     float onSetsAlpha = 1.0;

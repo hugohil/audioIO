@@ -30,7 +30,7 @@ void ofApp::setup(){
   networkGUI->setTheme(new ofxDatGuiThemeFUBAR());
 
   deviceGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_CENTER);
-  deviceGUI->addHeader("Devices");
+  deviceGUI->addHeader("Device");
   deviceGUI->setTheme(new ofxDatGuiThemeFUBAR());
 
   audioGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
@@ -68,6 +68,10 @@ void ofApp::setup(){
     deviceNames.push_back(device->name);
   }
   deviceGUI->addDropdown("devices available", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
+
+  ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", 1, inChannels, activeChannels);
+  activeChannelsSlider->setPrecision(0);
+  activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
 
   startButton = deviceGUI->addButton("start/stop");
   startButton->onButtonEvent(this, &ofApp::onButtonEvent);
@@ -113,21 +117,26 @@ void ofApp::onConnection(){
   socketIO.emit(key, message);
 }
 
+void ofApp::onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e){
+  activeChannels = e.value;
+
+  audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
+}
+
 void ofApp::toggleStream(){
   if (isStreamActive) {
     isStreamActive = false;
     soundStream.stop();
   } else {
-    soundStream.setup(this, outChannels, inChannels, sampleRate, bufferSize, 3);
+    soundStream.setup(this, outChannels, activeChannels, sampleRate, bufferSize, 3);
     isStreamActive = true;
   }
+  ofLogNotice()<< (isStreamActive ? "-- START STREAM" : "-- STOP STREAM");
 }
 
 //--------------------------------------------------------------
 void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
-  audioAnalyzer.exit();
   device = deviceList[e.child];
-
   setupDevice();
 }
 
@@ -136,8 +145,12 @@ void ofApp::setupDevice () {
   outChannels = device.outputChannels;
   inChannels = device.inputChannels;
 
+  activeChannels = (activeChannels > inChannels) ? inChannels : activeChannels;
+  deviceGUI->getSlider("active channels")->setValue(activeChannels);
+  deviceGUI->getSlider("active channels")->setMax(inChannels);
+
   soundStream.setDevice(device);
-  audioAnalyzer.setup(sampleRate, bufferSize, inChannels);
+  audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
 }
 
 void ofApp::onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e){
@@ -149,13 +162,15 @@ void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-  ofSetWindowTitle("AudioIO - " + ofToString(ofGetFrameRate()));
+  string streamLabelText = (isStreamActive ? "STARTED | " + device.name : "STOPPED | " + device.name);
+  ofSetWindowTitle("AudioIO - network: " + socketIO.getStatus() + " - audio: " + streamLabelText);
   connectionLabel->setLabel(socketIO.getStatus());
-  streamLabel->setLabel(isStreamActive ? device.name + " | started" : device.name + " | stopped");
+  streamLabel->setLabel(streamLabelText);
 
   // get the analysis values for every input channel and send it
   if (isStreamActive) {
-    for (int i = 0; i < inChannels; ++i) {
+    for (int i = 0; i < activeChannels; ++i) {
+      audioAnalyzer.setOnsetsParameters(i, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
       float rms = audioAnalyzer.getValue(RMS, i, smoothing);
 
       if (rms > RMSThreshold) {
@@ -182,7 +197,9 @@ void ofApp::update(){
         param += "}";
 
         string eventName = "channel-" + ofToString(i);
-        socketIO.emit(eventName, param);
+        if (socketIO.getStatus() == "connected") {
+          socketIO.emit(eventName, param);
+        }
       }
     }
   }
@@ -201,7 +218,6 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::audioIn(ofSoundBuffer &inBuffer){
   if (isStreamActive) {
-    audioAnalyzer.setOnsetsParameters(0, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
     audioAnalyzer.analyze(inBuffer);
   }
 }
@@ -215,7 +231,9 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
+  if (key == ' ') {
+    toggleStream();
+  }
 }
 
 //--------------------------------------------------------------
