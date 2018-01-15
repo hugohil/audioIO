@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#Dependencies of Sonoscopio
-
 if [ -z $1 ]; then
 PREFIX="git clone https://github.com/"
 else
@@ -11,7 +9,7 @@ fi
 cd ../../../addons
 
 #ofxAudioAnalyzer------------------------
-${PREFIX}leozimmerman/ofxAudioAnalyzer.git
+${PREFIX}hugohil/ofxAudioAnalyzer.git
 
 #ofxAudioDecoder------------------------
 ${PREFIX}leozimmerman/ofxAudioDecoder.git
