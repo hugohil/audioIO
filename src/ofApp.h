@@ -61,6 +61,7 @@ class ofApp : public ofBaseApp{
     int outChannels;
     int inChannels = 2;
     int activeChannels = 1;
+    int offsetChannels = 0;
 
     float RMSThreshold = 0.1;
     float onSetsAlpha = 1.0;

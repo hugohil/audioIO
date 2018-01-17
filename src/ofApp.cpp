@@ -69,7 +69,11 @@ void ofApp::setup(){
   }
   deviceGUI->addDropdown("devices available", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
 
-  ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", 1, inChannels, activeChannels);
+  ofxDatGuiSlider* offsetChannelsSlider = deviceGUI->addSlider("offset", 0, (inChannels - 1), offsetChannels);
+  offsetChannelsSlider->setPrecision(0);
+  offsetChannelsSlider->bind(offsetChannels);
+
+  ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", (offsetChannels + 1), inChannels, activeChannels);
   activeChannelsSlider->setPrecision(0);
   activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
 
@@ -149,6 +153,8 @@ void ofApp::setupDevice () {
   deviceGUI->getSlider("active channels")->setValue(activeChannels);
   deviceGUI->getSlider("active channels")->setMax(inChannels);
 
+  deviceGUI->getSlider("offset")->setMax((inChannels - 1));
+
   soundStream.setDevice(device);
   audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
 }
@@ -169,7 +175,7 @@ void ofApp::update(){
 
   // get the analysis values for every input channel and send it
   if (isStreamActive) {
-    for (int i = 0; i < activeChannels; ++i) {
+    for (int i = offsetChannels; i < activeChannels; ++i) {
       audioAnalyzer.setOnsetsParameters(i, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
       float rms = audioAnalyzer.getValue(RMS, i, smoothing);
 
