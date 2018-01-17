@@ -184,26 +184,27 @@ void ofApp::update(){
 
         param += "\"rms\":" + ofToString(rms) + ",";
         float power = audioAnalyzer.getValue(POWER, i, smoothing);
-        param += "\"power\":" + ofToString(power) + ",";
-        float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
-        param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
-        float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
-        param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
-        float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
-        param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
-        float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
-        param += "\"centroid\":" + ofToString(centroid) + ",";
-        float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
-        param += "\"rollOff\":" + ofToString(rollOff) + ",";
-        float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
-        param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
-        float isOnset = audioAnalyzer.getOnsetValue(i);
-        param += "\"isOnset\":" + ofToString(isOnset);
+        // param += "\"power\":" + ofToString(power) + ",";
+        // float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
+        // param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
+        // float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
+        // param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
+        // float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
+        // param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
+        // float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
+        // param += "\"centroid\":" + ofToString(centroid) + ",";
+        // float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
+        // param += "\"rollOff\":" + ofToString(rollOff) + ",";
+        // float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
+        // param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
+        // float isOnset = audioAnalyzer.getOnsetValue(i);
+        // param += "\"isOnset\":" + ofToString(isOnset) + ",";
 
+        param += "\"channel\":" + ofToString(i);
         param += "}";
 
-        string eventName = "channel-" + ofToString(i);
         if (socketIO.getStatus() == "connected") {
+          string eventName = "aio-datas";
           socketIO.emit(eventName, param);
         }
       }
