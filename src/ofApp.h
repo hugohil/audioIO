@@ -32,7 +32,6 @@ class ofApp : public ofBaseApp{
 
     void connect();
     ofxDatGuiButton* connectButton;
-    ofxDatGuiLabel* connectionLabel;
     ofxDatGuiTextInput* hostInput;
     ofxDatGuiTextInput* portInput;
     string host = "127.0.0.1";
@@ -50,20 +49,19 @@ class ofApp : public ofBaseApp{
     ofSoundDevice device;
     ofxDatGuiButton* startButton;
     bool isStreamActive = false;
-    ofxDatGuiLabel* streamLabel;
     void toggleStream();
     void setupDevice();
 
     vector<string> sampleRates = { "8000", "16000", "32000", "44100", "48000", "96000" };
     vector<string> bufferSizes = { "2048", "1024", "512", "256", "128", "64", "32", "16" };
     int sampleRate = 44100;
-    int bufferSize = 256;
+    int bufferSize = 512;
     int outChannels;
     int inChannels = 2;
     int activeChannels = 1;
     int offsetChannels = 0;
 
-    float RMSThreshold = 0.1;
+    float RMSThreshold = 0.3;
     float onSetsAlpha = 1.0;
     float onSetsSilenceThreshold = 0.2;
     float onSetsUseTimeThreshold = true;

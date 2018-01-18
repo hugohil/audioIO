@@ -4,6 +4,7 @@
 void ofApp::setup(){
   ofSetDataPathRoot("../Resources/data/");
 
+  ofSetWindowTitle("AudioIO");
   ofBackground(34, 34, 34);
   ofSetFrameRate(60);
 
@@ -58,7 +59,6 @@ void ofApp::setup(){
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
 
   // Devices
-  streamLabel = deviceGUI->addLabel(ofToString(isStreamActive));
 
   deviceGUI->addDropdown(ofToString(sampleRate), sampleRates)->onDropdownEvent(this, &ofApp::onSampleRateDropdownEvent);
   deviceGUI->addDropdown(ofToString(bufferSize), bufferSizes)->onDropdownEvent(this, &ofApp::onBufferSizeDropdownEvent);
@@ -75,13 +75,12 @@ void ofApp::setup(){
 
   ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", (offsetChannels + 1), inChannels, activeChannels);
   activeChannelsSlider->setPrecision(0);
-  activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
+  activeChannelsSlider->bind(activeChannels);
 
   startButton = deviceGUI->addButton("start/stop");
   startButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
   // Network
-  connectionLabel = networkGUI->addLabel(socketIO.getStatus());
   hostInput = networkGUI->addTextInput("HOST", host);
   portInput = networkGUI->addTextInput("PORT", port);
   connectButton = networkGUI->addButton("connect/disconnect");
@@ -121,17 +120,12 @@ void ofApp::onConnection(){
   socketIO.emit(key, message);
 }
 
-void ofApp::onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e){
-  activeChannels = e.value;
-
-  audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
-}
-
 void ofApp::toggleStream(){
   if (isStreamActive) {
     isStreamActive = false;
     soundStream.stop();
   } else {
+    audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
     soundStream.setup(this, outChannels, activeChannels, sampleRate, bufferSize, 3);
     isStreamActive = true;
   }
@@ -168,14 +162,10 @@ void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-  string streamLabelText = (isStreamActive ? "STARTED | " + device.name : "STOPPED | " + device.name);
-  ofSetWindowTitle("AudioIO - network: " + socketIO.getStatus() + " - audio: " + streamLabelText);
-  connectionLabel->setLabel(socketIO.getStatus());
-  streamLabel->setLabel(streamLabelText);
-
   // get the analysis values for every input channel and send it
   if (isStreamActive) {
     for (int i = offsetChannels; i < activeChannels; ++i) {
+      // audioAnalyzer.resetOnsets(i);
       audioAnalyzer.setOnsetsParameters(i, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
       float rms = audioAnalyzer.getValue(RMS, i, smoothing);
 
@@ -184,7 +174,7 @@ void ofApp::update(){
 
         param += "\"rms\":" + ofToString(rms) + ",";
         float power = audioAnalyzer.getValue(POWER, i, smoothing);
-        // param += "\"power\":" + ofToString(power) + ",";
+        param += "\"power\":" + ofToString(power) + ",";
         // float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
         // param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
         // float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
@@ -197,8 +187,8 @@ void ofApp::update(){
         // param += "\"rollOff\":" + ofToString(rollOff) + ",";
         // float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
         // param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
-        // float isOnset = audioAnalyzer.getOnsetValue(i);
-        // param += "\"isOnset\":" + ofToString(isOnset) + ",";
+        float isOnset = audioAnalyzer.getOnsetValue(i);
+        param += "\"isOnset\":" + ofToString(isOnset) + ",";
 
         param += "\"channel\":" + ofToString(i);
         param += "}";
