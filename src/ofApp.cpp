@@ -204,12 +204,15 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-  ofSetColor(0,255,0);
-  ofDrawBitmapString("App arguments: ", 20.0f, 20.0f);
   ofSetColor(255);
-  for (int i = 0; i < arguments.size(); i++){
-    ofDrawBitmapString(arguments[i], 20.0f, 60.0f + (20*i));
-  }
+  string streamStatus = (isStreamActive ? "STARTED" : "STOPPED");
+  string status = "STATUS:\n";
+  status += "\nnetwork: " + socketIO.getStatus();
+  status += "\ndevice: " + device.name;
+  status += "\nstream: " + streamStatus;
+  ofDrawBitmapString(status, 20.0f, ofGetHeight() - 100.0f);
+  ofSetColor(125);
+  ofDrawBitmapString("note: restarting stream does not work. you need to restart the app.", 20.0f, ofGetHeight() - 20.0f);
 }
 
 //--------------------------------------------------------------
