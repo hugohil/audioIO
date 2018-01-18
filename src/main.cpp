@@ -3,7 +3,7 @@
 
 //========================================================================
 int main (int argc, char *argv[]) {
-  ofSetupOpenGL(840, 360, OF_WINDOW);
+  ofSetupOpenGL(980, 460, OF_WINDOW);
 
   vector<string> args;
   if(argc > 1){
