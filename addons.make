@@ -2,3 +2,4 @@ ofxAudioAnalyzer
 ofxAudioDecoder
 ofxDatGui
 ofxSocketIO
+ofxXmlSettings

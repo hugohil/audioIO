@@ -11,19 +11,6 @@ void ofApp::setup(){
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
 
-  for (int i = 0; i < arguments.size(); i++){
-    if (arguments[i] == "--device") {
-      deviceIndex = stoi(arguments[i + 1]);
-      device = deviceList[deviceIndex];
-    } else if (arguments[i] == "--host") {
-      host = arguments[i + 1];
-    } else if (arguments[i] == "--port") {
-      port = arguments[i + 1];
-    } else if (arguments[i] == "--autostart") {
-      autostart = true;
-    }
-  }
-
   ofxDatGuiLog::quiet();
 
   networkGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
@@ -37,6 +24,9 @@ void ofApp::setup(){
   audioGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
   audioGUI->addHeader("Audio");
   audioGUI->setTheme(new ofxDatGuiThemeFUBAR());
+
+  ofxDatGuiButton* saveAudioSettingsButton = audioGUI->addButton("save settings");
+  saveAudioSettingsButton->onButtonEvent(this, &ofApp::saveAudioSettings);
 
   ofxDatGuiSlider* RMSThresholdSlider = audioGUI->addSlider("RMS threshold", 0.0, 1.0);
   RMSThresholdSlider->bind(RMSThreshold);
@@ -59,6 +49,8 @@ void ofApp::setup(){
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
 
   // Devices
+  ofxDatGuiButton* saveDeviceSettingsButton = deviceGUI->addButton("save settings");
+  saveDeviceSettingsButton->onButtonEvent(this, &ofApp::saveDeviceSettings);
 
   deviceGUI->addDropdown(ofToString(sampleRate), sampleRates)->onDropdownEvent(this, &ofApp::onSampleRateDropdownEvent);
   deviceGUI->addDropdown(ofToString(bufferSize), bufferSizes)->onDropdownEvent(this, &ofApp::onBufferSizeDropdownEvent);
@@ -81,11 +73,16 @@ void ofApp::setup(){
   startButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
   // Network
+  ofxDatGuiButton* saveNetworkSettingsButton = networkGUI->addButton("save settings");
+  saveNetworkSettingsButton->onButtonEvent(this, &ofApp::saveNetworkSettings);
+
   hostInput = networkGUI->addTextInput("HOST", host);
   portInput = networkGUI->addTextInput("PORT", port);
   connectButton = networkGUI->addButton("connect/disconnect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
+
+  loadSettings();
 
   if (autostart) {
     connect();
@@ -151,7 +148,8 @@ void ofApp::toggleStream(){
 
 //--------------------------------------------------------------
 void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
-  device = deviceList[e.child];
+  deviceIndex = e.child;
+  device = deviceList[deviceIndex];
   setupDevice();
 }
 
@@ -175,6 +173,66 @@ void ofApp::onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e){
 }
 void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
   bufferSize = stof(bufferSizes[e.child]);
+}
+
+void ofApp::loadSettings(){
+  settings.loadFile("settings.xml");
+
+  host = settings.getValue("network:host", host);
+  port = settings.getValue("network:port", port);
+
+  deviceIndex = settings.getValue("device:deviceIndex", deviceIndex);
+  sampleRate = settings.getValue("device:sampleRate", sampleRate);
+  bufferSize = settings.getValue("device:bufferSize", bufferSize);
+  offsetChannels = settings.getValue("device:offsetChannels", offsetChannels);
+  activeChannels = settings.getValue("device:activeChannels", activeChannels);
+
+  RMSThreshold = settings.getValue("audio:RMSThreshold", RMSThreshold);
+  onSetsAlpha = settings.getValue("audio:onSetsAlpha", onSetsAlpha);
+  onSetsSilenceThreshold = settings.getValue("audio:onSetsSilenceThreshold", onSetsSilenceThreshold);
+  onSetsUseTimeThreshold = settings.getValue("audio:onSetsUseTimeThreshold", onSetsUseTimeThreshold);
+  onSetsTimeThreshold = settings.getValue("audio:onSetsTimeThreshold", onSetsTimeThreshold);
+  smoothing = settings.getValue("audio:smoothing", smoothing);
+
+  for (int i = 0; i < arguments.size(); i++){
+    if (arguments[i] == "--device") {
+      deviceIndex = stoi(arguments[i + 1]);
+    } else if (arguments[i] == "--host") {
+      host = arguments[i + 1];
+    } else if (arguments[i] == "--port") {
+      port = arguments[i + 1];
+    } else if (arguments[i] == "--autostart") {
+      autostart = true;
+    }
+  }
+
+  device = deviceList[deviceIndex];
+  setupDevice();
+}
+
+void ofApp::saveNetworkSettings(ofxDatGuiButtonEvent e){
+  settings.setValue("network:host", host);
+  settings.setValue("network:port", port);
+  settings.saveFile("settings.xml");
+}
+
+void ofApp::saveDeviceSettings(ofxDatGuiButtonEvent e){
+  settings.setValue("device:deviceIndex", deviceIndex);
+  settings.setValue("device:sampleRate", sampleRate);
+  settings.setValue("device:bufferSize", bufferSize);
+  settings.setValue("device:offsetChannels", offsetChannels);
+  settings.setValue("device:activeChannels", activeChannels);
+  settings.saveFile("settings.xml");
+}
+
+void ofApp::saveAudioSettings(ofxDatGuiButtonEvent e){
+  settings.setValue("audio:RMSThreshold", RMSThreshold);
+  settings.setValue("audio:onSetsAlpha", onSetsAlpha);
+  settings.setValue("audio:onSetsSilenceThreshold", onSetsSilenceThreshold);
+  settings.setValue("audio:onSetsUseTimeThreshold", onSetsUseTimeThreshold);
+  settings.setValue("audio:onSetsTimeThreshold", onSetsTimeThreshold);
+  settings.setValue("audio:smoothing", smoothing);
+  settings.saveFile("settings.xml");
 }
 
 //--------------------------------------------------------------

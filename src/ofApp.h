@@ -5,6 +5,7 @@
 #include "ofxDatGui.h"
 #include "ofxSocketIO.h"
 #include "ofxSocketIOData.h"
+#include "ofxXmlSettings.h"
 #include "gui/theme.h"
 
 class ofApp : public ofBaseApp{
@@ -15,6 +16,7 @@ class ofApp : public ofBaseApp{
     void update();
     void draw();
     void exit();
+    void loadSettings();
 
     void audioIn(ofSoundBuffer &inBuffer);
 
@@ -36,6 +38,7 @@ class ofApp : public ofBaseApp{
     ofxDatGuiTextInput* portInput;
     string host = "127.0.0.1";
     string port = "8888";
+    void saveNetworkSettings(ofxDatGuiButtonEvent e);
 
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
     void onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e);
@@ -64,6 +67,7 @@ class ofApp : public ofBaseApp{
     int activeChannels = 1;
     int offsetChannels = 0;
     vector<float> debugChannels = { 0.0f };
+    void saveDeviceSettings(ofxDatGuiButtonEvent e);
 
     float RMSThreshold = 0.3;
     float onSetsAlpha = 1.0;
@@ -71,12 +75,15 @@ class ofApp : public ofBaseApp{
     float onSetsUseTimeThreshold = true;
     float onSetsTimeThreshold = 100.0;
     float smoothing = 0.5;
+    void saveAudioSettings(ofxDatGuiButtonEvent e);
 
     ofxDatGui* networkGUI;
     ofxDatGui* deviceGUI;
     ofxDatGui* audioGUI;
 
     bool autostart = false;
+
+    ofxXmlSettings settings;
 
     ofxSocketIO socketIO;
     void onConnection();
