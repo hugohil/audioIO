@@ -70,7 +70,7 @@ class ofApp : public ofBaseApp{
     float onSetsSilenceThreshold = 0.2;
     float onSetsUseTimeThreshold = true;
     float onSetsTimeThreshold = 100.0;
-    float smoothing = 0.75;
+    float smoothing = 0.5;
 
     ofxDatGui* networkGUI;
     ofxDatGui* deviceGUI;
