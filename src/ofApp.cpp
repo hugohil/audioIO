@@ -71,11 +71,11 @@ void ofApp::setup(){
 
   ofxDatGuiSlider* offsetChannelsSlider = deviceGUI->addSlider("offset", 0, (inChannels - 1), offsetChannels);
   offsetChannelsSlider->setPrecision(0);
-  offsetChannelsSlider->bind(offsetChannels);
+  offsetChannelsSlider->onSliderEvent(this, &ofApp::onOffsetChannelsSliderEvent);
 
   ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", (offsetChannels + 1), inChannels, activeChannels);
   activeChannelsSlider->setPrecision(0);
-  activeChannelsSlider->bind(activeChannels);
+  activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
 
   startButton = deviceGUI->addButton("start/stop");
   startButton->onButtonEvent(this, &ofApp::onButtonEvent);
@@ -103,6 +103,23 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e) {
     }
   } else if (e.target == startButton) {
     toggleStream();
+  }
+}
+
+void ofApp::onOffsetChannelsSliderEvent(ofxDatGuiSliderEvent e){
+  offsetChannels = e.value;
+  resetDebugChannels();
+}
+
+void ofApp::onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e){
+  activeChannels = e.value;
+  resetDebugChannels();
+}
+
+void ofApp::resetDebugChannels(){
+  debugChannels.clear();
+  for (int i = offsetChannels; i < activeChannels; ++i) {
+    debugChannels.push_back(0.0f);
   }
 }
 
@@ -168,13 +185,14 @@ void ofApp::update(){
       // audioAnalyzer.resetOnsets(i);
       audioAnalyzer.setOnsetsParameters(i, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
       float rms = audioAnalyzer.getValue(RMS, i, smoothing);
+      debugChannels[(i - offsetChannels)] = rms;
 
       if (rms > RMSThreshold) {
         string param = "{";
 
-        param += "\"rms\":" + ofToString(rms) + ",";
+        param += "\"rms\":" + ofToString(rms, 4) + ",";
         float power = audioAnalyzer.getValue(POWER, i, smoothing);
-        param += "\"power\":" + ofToString(power) + ",";
+        param += "\"power\":" + ofToString(power, 4) + ",";
         // float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
         // param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
         // float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
@@ -188,7 +206,7 @@ void ofApp::update(){
         // float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
         // param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
         float isOnset = audioAnalyzer.getOnsetValue(i);
-        param += "\"isOnset\":" + ofToString(isOnset) + ",";
+        param += "\"isOnset\":" + ofToString(isOnset, 4) + ",";
 
         param += "\"channel\":" + ofToString(i);
         param += "}";
@@ -204,15 +222,25 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+  if (isStreamActive) {
+    float debugWidth = (ofGetWidth() / debugChannels.size());
+    for (int i = 0; i < debugChannels.size(); ++i){
+      ofSetColor(200);
+      ofDrawRectangle((i * debugWidth), ofGetHeight(), debugWidth, -(debugChannels[i] * ofGetHeight()));
+      ofSetColor(255);
+      string debug = "channel #" + ofToString(i + offsetChannels) + "\nRMS: " + ofToString(debugChannels[i], 4);
+      ofDrawBitmapString(debug, ((debugWidth * i) + 5.0f), (ofGetHeight() - 20.0f));
+    }
+  }
   ofSetColor(255);
   string streamStatus = (isStreamActive ? "STARTED" : "STOPPED");
   string status = "STATUS:\n";
   status += "\nnetwork: " + socketIO.getStatus();
   status += "\ndevice: " + device.name;
   status += "\nstream: " + streamStatus;
-  ofDrawBitmapString(status, 20.0f, ofGetHeight() - 100.0f);
+  ofDrawBitmapString(status, 20.0f, ofGetHeight() - 140.0f);
   ofSetColor(125);
-  ofDrawBitmapString("note: restarting stream does not work. you need to restart the app.", 20.0f, ofGetHeight() - 20.0f);
+  ofDrawBitmapString("note: restarting stream does not work. you need to restart the app.", 20.0f, ofGetHeight() - 60.0f);
 }
 
 //--------------------------------------------------------------

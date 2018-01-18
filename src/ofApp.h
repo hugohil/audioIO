@@ -40,13 +40,16 @@ class ofApp : public ofBaseApp{
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
     void onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e);
     void onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e);
+    void onOffsetChannelsSliderEvent(ofxDatGuiSliderEvent e);
     void onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e);
+    void resetDebugChannels();
 
     int deviceIndex = 0;
     vector<ofSoundDevice> deviceList;
     ofSoundStream soundStream;
     ofxAudioAnalyzer audioAnalyzer;
     ofSoundDevice device;
+    ofxDatGuiFolder* debugFolder;
     ofxDatGuiButton* startButton;
     bool isStreamActive = false;
     void toggleStream();
@@ -60,6 +63,7 @@ class ofApp : public ofBaseApp{
     int inChannels = 2;
     int activeChannels = 1;
     int offsetChannels = 0;
+    vector<float> debugChannels = { 0.0f };
 
     float RMSThreshold = 0.3;
     float onSetsAlpha = 1.0;
