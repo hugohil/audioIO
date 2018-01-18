@@ -8,6 +8,10 @@ void ofApp::setup(){
   ofBackground(34, 34, 34);
   ofSetFrameRate(60);
 
+  controls = "[space] to toggle analysis";
+  controls += "\n[s] to setup stream and analyzer";
+  controls += "\n[n/d/a] to save network/device/audio settings";
+
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
 
@@ -24,6 +28,8 @@ void ofApp::setup(){
   audioGUI = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
   audioGUI->addHeader("Audio");
   audioGUI->setTheme(new ofxDatGuiThemeFUBAR());
+
+  loadSettings();
 
   ofxDatGuiButton* saveAudioSettingsButton = audioGUI->addButton("save settings");
   saveAudioSettingsButton->onButtonEvent(this, &ofApp::saveAudioSettings);
@@ -69,7 +75,10 @@ void ofApp::setup(){
   activeChannelsSlider->setPrecision(0);
   activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
 
-  startButton = deviceGUI->addButton("start/stop");
+  ofxDatGuiButton* setupButton = deviceGUI->addButton("setup device and analyzer");
+  setupButton->onButtonEvent(this, &ofApp::setupAnalyzer);
+
+  startButton = deviceGUI->addButton("toggle analysis");
   startButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
   // Network
@@ -81,8 +90,6 @@ void ofApp::setup(){
   connectButton = networkGUI->addButton("connect/disconnect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
-
-  loadSettings();
 
   if (autostart) {
     connect();
@@ -137,13 +144,19 @@ void ofApp::onConnection(){
 void ofApp::toggleStream(){
   if (isStreamActive) {
     isStreamActive = false;
-    soundStream.stop();
   } else {
-    audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
-    soundStream.setup(this, outChannels, activeChannels, sampleRate, bufferSize, 3);
     isStreamActive = true;
   }
   ofLogNotice()<< (isStreamActive ? "-- START STREAM" : "-- STOP STREAM");
+}
+
+void ofApp::setupAnalyzer(ofxDatGuiButtonEvent e){
+  setupAnalyzer();
+}
+
+void ofApp::setupAnalyzer(){
+  soundStream.setup(this, outChannels, activeChannels, sampleRate, bufferSize, 3);
+  audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
 }
 
 //--------------------------------------------------------------
@@ -151,9 +164,11 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
   deviceIndex = e.child;
   device = deviceList[deviceIndex];
   setupDevice();
+  setupAnalyzer();
 }
 
 void ofApp::setupDevice () {
+  soundStream.stop();
   // get device config
   outChannels = device.outputChannels;
   inChannels = device.inputChannels;
@@ -165,7 +180,6 @@ void ofApp::setupDevice () {
   deviceGUI->getSlider("offset")->setMax((inChannels - 1));
 
   soundStream.setDevice(device);
-  audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
 }
 
 void ofApp::onSampleRateDropdownEvent(ofxDatGuiDropdownEvent e){
@@ -208,15 +222,22 @@ void ofApp::loadSettings(){
 
   device = deviceList[deviceIndex];
   setupDevice();
+  setupAnalyzer();
 }
 
 void ofApp::saveNetworkSettings(ofxDatGuiButtonEvent e){
+  saveNetworkSettings();
+}
+void ofApp::saveNetworkSettings(){
   settings.setValue("network:host", host);
   settings.setValue("network:port", port);
   settings.saveFile("settings.xml");
 }
 
 void ofApp::saveDeviceSettings(ofxDatGuiButtonEvent e){
+  saveDeviceSettings();
+}
+void ofApp::saveDeviceSettings(){
   settings.setValue("device:deviceIndex", deviceIndex);
   settings.setValue("device:sampleRate", sampleRate);
   settings.setValue("device:bufferSize", bufferSize);
@@ -226,6 +247,9 @@ void ofApp::saveDeviceSettings(ofxDatGuiButtonEvent e){
 }
 
 void ofApp::saveAudioSettings(ofxDatGuiButtonEvent e){
+  saveAudioSettings();
+}
+void ofApp::saveAudioSettings(){
   settings.setValue("audio:RMSThreshold", RMSThreshold);
   settings.setValue("audio:onSetsAlpha", onSetsAlpha);
   settings.setValue("audio:onSetsSilenceThreshold", onSetsSilenceThreshold);
@@ -287,18 +311,18 @@ void ofApp::draw(){
       ofDrawRectangle((i * debugWidth), ofGetHeight(), debugWidth, -(debugChannels[i] * ofGetHeight()));
       ofSetColor(255);
       string debug = "channel #" + ofToString(i + offsetChannels) + "\nRMS: " + ofToString(debugChannels[i], 4);
-      ofDrawBitmapString(debug, ((debugWidth * i) + 5.0f), (ofGetHeight() - 20.0f));
+      ofDrawBitmapString(debug, ((debugWidth * i) + 10.0f), (ofGetHeight() - 40.0f));
     }
   }
   ofSetColor(255);
   string streamStatus = (isStreamActive ? "STARTED" : "STOPPED");
-  string status = "STATUS:\n";
+  status = "STATUS:\n";
   status += "\nnetwork: " + socketIO.getStatus();
   status += "\ndevice: " + device.name;
   status += "\nstream: " + streamStatus;
-  ofDrawBitmapString(status, 20.0f, ofGetHeight() - 140.0f);
+  ofDrawBitmapString(status, 20.0f, ofGetHeight() - 180.0f);
   ofSetColor(125);
-  ofDrawBitmapString("note: restarting stream does not work. you need to restart the app.", 20.0f, ofGetHeight() - 60.0f);
+  ofDrawBitmapString(controls, 20.0f, ofGetHeight() - 100.0f);
 }
 
 //--------------------------------------------------------------
@@ -319,6 +343,14 @@ void ofApp::exit(){
 void ofApp::keyPressed(int key){
   if (key == ' ') {
     toggleStream();
+  } else if (key == 's') {
+    setupAnalyzer();
+  } else if (key == 'n') {
+    saveNetworkSettings();
+  } else if (key == 'd') {
+    saveDeviceSettings();
+  } else if (key == 'a') {
+    saveAudioSettings();
   }
 }
 

@@ -38,6 +38,7 @@ class ofApp : public ofBaseApp{
     ofxDatGuiTextInput* portInput;
     string host = "127.0.0.1";
     string port = "8888";
+    void saveNetworkSettings();
     void saveNetworkSettings(ofxDatGuiButtonEvent e);
 
     void onDevicesDropdownEvent(ofxDatGuiDropdownEvent e);
@@ -47,6 +48,7 @@ class ofApp : public ofBaseApp{
     void onActiveChannelsSliderEvent(ofxDatGuiSliderEvent e);
     void resetDebugChannels();
 
+    bool isNewDevice = true;
     int deviceIndex = 0;
     vector<ofSoundDevice> deviceList;
     ofSoundStream soundStream;
@@ -57,6 +59,8 @@ class ofApp : public ofBaseApp{
     bool isStreamActive = false;
     void toggleStream();
     void setupDevice();
+    void setupAnalyzer();
+    void setupAnalyzer(ofxDatGuiButtonEvent e);
 
     vector<string> sampleRates = { "8000", "16000", "32000", "44100", "48000", "96000" };
     vector<string> bufferSizes = { "2048", "1024", "512", "256", "128", "64", "32", "16" };
@@ -67,6 +71,7 @@ class ofApp : public ofBaseApp{
     int activeChannels = 1;
     int offsetChannels = 0;
     vector<float> debugChannels = { 0.0f };
+    void saveDeviceSettings();
     void saveDeviceSettings(ofxDatGuiButtonEvent e);
 
     float RMSThreshold = 0.3;
@@ -75,6 +80,7 @@ class ofApp : public ofBaseApp{
     float onSetsUseTimeThreshold = true;
     float onSetsTimeThreshold = 100.0;
     float smoothing = 0.5;
+    void saveAudioSettings();
     void saveAudioSettings(ofxDatGuiButtonEvent e);
 
     ofxDatGui* networkGUI;
@@ -84,6 +90,9 @@ class ofApp : public ofBaseApp{
     bool autostart = false;
 
     ofxXmlSettings settings;
+
+    string controls;
+    string status;
 
     ofxSocketIO socketIO;
     void onConnection();
