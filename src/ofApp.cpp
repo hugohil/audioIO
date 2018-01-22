@@ -11,6 +11,7 @@ void ofApp::setup(){
   controls = "[space] to toggle analysis";
   controls += "\n[s] to setup stream and analyzer";
   controls += "\n[n/d/a] to save network/device/audio settings";
+  controls += "\n[esc] to quit";
 
   soundStream.printDeviceList();
   deviceList = soundStream.getDeviceList();
