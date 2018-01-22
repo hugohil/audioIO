@@ -342,6 +342,7 @@ void ofApp::saveAudioSettings(){
 void ofApp::update(){
   // get the analysis values for every input channel and send it
   if (isStreamActive) {
+    string params = "[";
     for (int i = offsetChannels; i < activeChannels; ++i) {
       // audioAnalyzer.resetOnsets(i);
       audioAnalyzer.setOnsetsParameters(i, onSetsAlpha, onSetsSilenceThreshold, onSetsTimeThreshold, onSetsUseTimeThreshold);
@@ -388,13 +389,15 @@ void ofApp::update(){
         }
 
         param += "\"channel\":" + ofToString(i);
-        param += "}";
+        param += "},";
 
-        if (socketIO.getStatus() == "connected") {
-          string eventName = "aio-datas";
-          socketIO.emit(eventName, param);
-        }
+        params += param;
       }
+    }
+    params += "{}]"; // small hack to avoid JSON parsing errors
+    if (socketIO.getStatus() == "connected") {
+      string eventName = "aio-datas";
+      socketIO.emit(eventName, params);
     }
   }
 }
