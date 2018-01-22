@@ -89,12 +89,14 @@ void ofApp::setup(){
   }
   deviceGUI->addDropdown("devices available", deviceNames)->onDropdownEvent(this, &ofApp::onDevicesDropdownEvent);
 
-  ofxDatGuiSlider* offsetChannelsSlider = deviceGUI->addSlider("offset", 0, (inChannels - 1), offsetChannels);
+  ofxDatGuiSlider* offsetChannelsSlider = deviceGUI->addSlider("offset", 0, (inChannels - 1));
   offsetChannelsSlider->setPrecision(0);
+  offsetChannelsSlider->setValue(int(offsetChannels));
   offsetChannelsSlider->onSliderEvent(this, &ofApp::onOffsetChannelsSliderEvent);
 
-  ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", (offsetChannels + 1), inChannels, activeChannels);
+  ofxDatGuiSlider* activeChannelsSlider = deviceGUI->addSlider("active channels", (offsetChannels + 1), inChannels);
   activeChannelsSlider->setPrecision(0);
+  activeChannelsSlider->setValue(int(activeChannels));
   activeChannelsSlider->onSliderEvent(this, &ofApp::onActiveChannelsSliderEvent);
 
   ofxDatGuiButton* setupButton = deviceGUI->addButton("setup device and analyzer");
@@ -205,6 +207,7 @@ void ofApp::setupDevice () {
   offsetChannels = (offsetChannels > (inChannels - 1)) ? (inChannels - 1) : offsetChannels;
   deviceGUI->getSlider("offset")->setMax((inChannels - 1));
 
+  resetDebugChannels();
   soundStream.setDevice(device);
 }
 
