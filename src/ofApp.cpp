@@ -170,6 +170,7 @@ void ofApp::onDevicesDropdownEvent(ofxDatGuiDropdownEvent e){
 
 void ofApp::setupDevice () {
   soundStream.stop();
+  soundStream.close();
   // get device config
   outChannels = device.outputChannels;
   inChannels = device.inputChannels;
