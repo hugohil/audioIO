@@ -177,6 +177,8 @@ void ofApp::setupAnalyzer(ofxDatGuiButtonEvent e){
 }
 
 void ofApp::setupAnalyzer(){
+  soundStream.stop();
+  soundStream.close();
   soundStream.setup(this, outChannels, activeChannels, sampleRate, bufferSize, 3);
   audioAnalyzer.reset(sampleRate, bufferSize, activeChannels);
 }
