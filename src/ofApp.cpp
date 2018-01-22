@@ -202,6 +202,7 @@ void ofApp::setupDevice () {
   deviceGUI->getSlider("active channels")->setValue(activeChannels);
   deviceGUI->getSlider("active channels")->setMax(inChannels);
 
+  offsetChannels = (offsetChannels > (inChannels - 1)) ? (inChannels - 1) : offsetChannels;
   deviceGUI->getSlider("offset")->setMax((inChannels - 1));
 
   soundStream.setDevice(device);
