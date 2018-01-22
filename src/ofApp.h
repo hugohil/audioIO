@@ -74,12 +74,32 @@ class ofApp : public ofBaseApp{
     void saveDeviceSettings();
     void saveDeviceSettings(ofxDatGuiButtonEvent e);
 
+    bool featureRMS = true;
+    bool featurePOWER = false;
+    bool featurePITCH_FREQ = false;
+    bool featurePITCH_SALIENCE = false;
+    bool featureINHARMONICITY = false;
+    bool featureCENTROID = false;
+    bool featureROLL_OFF = false;
+    bool featureSTRONG_PEAK = false;
+    bool featureONSETS = false;
+    void onToggleRMSEvent(ofxDatGuiToggleEvent e);
+    void onTogglePOWEREvent(ofxDatGuiToggleEvent e);
+    void onTogglePITCH_FREQEvent(ofxDatGuiToggleEvent e);
+    void onTogglePITCH_SALIENCEEvent(ofxDatGuiToggleEvent e);
+    void onToggleINHARMONICITYEvent(ofxDatGuiToggleEvent e);
+    void onToggleCENTROIDEvent(ofxDatGuiToggleEvent e);
+    void onToggleROLL_OFFEvent(ofxDatGuiToggleEvent e);
+    void onToggleSTRONG_PEAKEvent(ofxDatGuiToggleEvent e);
+    void onToggleONSETSEvent(ofxDatGuiToggleEvent e);
+
     float RMSThreshold = 0.3;
     float onSetsAlpha = 1.0;
     float onSetsSilenceThreshold = 0.2;
-    float onSetsUseTimeThreshold = true;
+    bool onSetsUseTimeThreshold = true;
     float onSetsTimeThreshold = 100.0;
     float smoothing = 0.5;
+    void onSetsUseTimeThresholdEvent(ofxDatGuiToggleEvent e);
     void saveAudioSettings();
     void saveAudioSettings(ofxDatGuiButtonEvent e);
 

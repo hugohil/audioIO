@@ -41,6 +41,26 @@ void ofApp::setup(){
   ofxDatGuiSlider* smoothingSlider = audioGUI->addSlider("smoothing", 0.0, 1.0);
   smoothingSlider->bind(smoothing);
 
+  // Features
+  ofxDatGuiFolder* features = audioGUI->addFolder("features", ofColor::white);
+  ofxDatGuiToggle* toggleRMS = features->addToggle("rms", featureRMS);
+  toggleRMS->onToggleEvent(this, &ofApp::onToggleRMSEvent);
+  ofxDatGuiToggle* togglePOWER = features->addToggle("power", featurePOWER);
+  togglePOWER->onToggleEvent(this, &ofApp::onTogglePOWEREvent);
+  ofxDatGuiToggle* togglePITCH_FREQ = features->addToggle("pitch freq", featurePITCH_FREQ);
+  togglePITCH_FREQ->onToggleEvent(this, &ofApp::onTogglePITCH_FREQEvent);
+  ofxDatGuiToggle* togglePITCH_SALIENCE = features->addToggle("pitch salience", featurePITCH_SALIENCE);
+  togglePITCH_SALIENCE->onToggleEvent(this, &ofApp::onTogglePITCH_SALIENCEEvent);
+  ofxDatGuiToggle* toggleINHARMONICITY = features->addToggle("inharmonicity", featureINHARMONICITY);
+  toggleINHARMONICITY->onToggleEvent(this, &ofApp::onToggleINHARMONICITYEvent);
+  ofxDatGuiToggle* toggleCENTROID = features->addToggle("centroid", featureCENTROID);
+  toggleCENTROID->onToggleEvent(this, &ofApp::onToggleCENTROIDEvent);
+  ofxDatGuiToggle* toggleROLL_OFF = features->addToggle("roll off", featureROLL_OFF);
+  toggleROLL_OFF->onToggleEvent(this, &ofApp::onToggleROLL_OFFEvent);
+  ofxDatGuiToggle* toggleSTRONG_PEAK = features->addToggle("strong peak", featureSTRONG_PEAK);
+  toggleSTRONG_PEAK->onToggleEvent(this, &ofApp::onToggleSTRONG_PEAKEvent);
+  ofxDatGuiToggle* toggleONSETS = features->addToggle("onsets", featureONSETS);
+  toggleONSETS->onToggleEvent(this, &ofApp::onToggleONSETSEvent);
   // Onsets
   ofxDatGuiFolder* onsets = audioGUI->addFolder("onsets", ofColor::white);
 
@@ -50,7 +70,8 @@ void ofApp::setup(){
   ofxDatGuiSlider* onSetsSilenceThresholdSlider = onsets->addSlider("silenceThreshold", 0.0, 1.0);
   onSetsSilenceThresholdSlider->bind(onSetsSilenceThreshold);
 
-  ofxDatGuiToggle* onSetsUseTimeThresholdSlider = onsets->addToggle("useTimeThreshold", onSetsUseTimeThreshold);
+  ofxDatGuiToggle* onSetsUseTimeThreshold = onsets->addToggle("useTimeThreshold", onSetsUseTimeThreshold);
+  onSetsUseTimeThreshold->onToggleEvent(this, &ofApp::onSetsUseTimeThresholdEvent);
 
   ofxDatGuiSlider* onSetsTimeThresholdSlider = onsets->addSlider("timeThreshold", 0.0, 1000.0);
   onSetsTimeThresholdSlider->bind(onSetsTimeThreshold);
@@ -191,6 +212,38 @@ void ofApp::onBufferSizeDropdownEvent(ofxDatGuiDropdownEvent e){
   bufferSize = stof(bufferSizes[e.child]);
 }
 
+void ofApp::onToggleRMSEvent(ofxDatGuiToggleEvent e){
+  featureRMS = e.checked;
+}
+void ofApp::onTogglePOWEREvent(ofxDatGuiToggleEvent e){
+  featurePOWER = e.checked;
+}
+void ofApp::onTogglePITCH_FREQEvent(ofxDatGuiToggleEvent e){
+  featurePITCH_FREQ = e.checked;
+}
+void ofApp::onTogglePITCH_SALIENCEEvent(ofxDatGuiToggleEvent e){
+  featurePITCH_SALIENCE = e.checked;
+}
+void ofApp::onToggleINHARMONICITYEvent(ofxDatGuiToggleEvent e){
+  featureINHARMONICITY = e.checked;
+}
+void ofApp::onToggleCENTROIDEvent(ofxDatGuiToggleEvent e){
+  featureCENTROID = e.checked;
+}
+void ofApp::onToggleROLL_OFFEvent(ofxDatGuiToggleEvent e){
+  featureROLL_OFF = e.checked;
+}
+void ofApp::onToggleSTRONG_PEAKEvent(ofxDatGuiToggleEvent e){
+  featureSTRONG_PEAK = e.checked;
+}
+void ofApp::onToggleONSETSEvent(ofxDatGuiToggleEvent e){
+  featureONSETS = e.checked;
+}
+
+void ofApp::onSetsUseTimeThresholdEvent(ofxDatGuiToggleEvent e){
+  onSetsUseTimeThreshold = e.checked;
+}
+
 void ofApp::loadSettings(){
   settings.loadFile("settings.xml");
 
@@ -204,11 +257,20 @@ void ofApp::loadSettings(){
   activeChannels = settings.getValue("device:activeChannels", activeChannels);
 
   RMSThreshold = settings.getValue("audio:RMSThreshold", RMSThreshold);
+  smoothing = settings.getValue("audio:smoothing", smoothing);
+  featureRMS = (bool) settings.getValue("audio:featureRMS", featureRMS);
+  featurePOWER = (bool) settings.getValue("audio:featurePOWER", featurePOWER);
+  featurePITCH_FREQ = (bool) settings.getValue("audio:featurePITCH_FREQ", featurePITCH_FREQ);
+  featurePITCH_SALIENCE = (bool) settings.getValue("audio:featurePITCH_SALIENCE", featurePITCH_SALIENCE);
+  featureINHARMONICITY = (bool) settings.getValue("audio:featureINHARMONICITY", featureINHARMONICITY);
+  featureCENTROID = (bool) settings.getValue("audio:featureCENTROID", featureCENTROID);
+  featureROLL_OFF = (bool) settings.getValue("audio:featureROLL_OFF", featureROLL_OFF);
+  featureSTRONG_PEAK = (bool) settings.getValue("audio:featureSTRONG_PEAK", featureSTRONG_PEAK);
+  featureONSETS = (bool) settings.getValue("audio:featureONSETS", featureONSETS);
   onSetsAlpha = settings.getValue("audio:onSetsAlpha", onSetsAlpha);
   onSetsSilenceThreshold = settings.getValue("audio:onSetsSilenceThreshold", onSetsSilenceThreshold);
   onSetsUseTimeThreshold = settings.getValue("audio:onSetsUseTimeThreshold", onSetsUseTimeThreshold);
   onSetsTimeThreshold = settings.getValue("audio:onSetsTimeThreshold", onSetsTimeThreshold);
-  smoothing = settings.getValue("audio:smoothing", smoothing);
 
   for (int i = 0; i < arguments.size(); i++){
     if (arguments[i] == "--device") {
@@ -253,11 +315,20 @@ void ofApp::saveAudioSettings(ofxDatGuiButtonEvent e){
 }
 void ofApp::saveAudioSettings(){
   settings.setValue("audio:RMSThreshold", RMSThreshold);
+  settings.setValue("audio:smoothing", smoothing);
+  settings.setValue("audio:featureRMS", featureRMS);
+  settings.setValue("audio:featurePOWER", featurePOWER);
+  settings.setValue("audio:featurePITCH_FREQ", featurePITCH_FREQ);
+  settings.setValue("audio:featurePITCH_SALIENCE", featurePITCH_SALIENCE);
+  settings.setValue("audio:featureINHARMONICITY", featureINHARMONICITY);
+  settings.setValue("audio:featureCENTROID", featureCENTROID);
+  settings.setValue("audio:featureROLL_OFF", featureROLL_OFF);
+  settings.setValue("audio:featureSTRONG_PEAK", featureSTRONG_PEAK);
+  settings.setValue("audio:featureONSETS", featureONSETS);
   settings.setValue("audio:onSetsAlpha", onSetsAlpha);
   settings.setValue("audio:onSetsSilenceThreshold", onSetsSilenceThreshold);
   settings.setValue("audio:onSetsUseTimeThreshold", onSetsUseTimeThreshold);
   settings.setValue("audio:onSetsTimeThreshold", onSetsTimeThreshold);
-  settings.setValue("audio:smoothing", smoothing);
   settings.saveFile("settings.xml");
 }
 
@@ -274,23 +345,41 @@ void ofApp::update(){
       if (rms > RMSThreshold) {
         string param = "{";
 
-        param += "\"rms\":" + ofToString(rms, 4) + ",";
-        float power = audioAnalyzer.getValue(POWER, i, smoothing);
-        param += "\"power\":" + ofToString(power, 4) + ",";
-        // float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
-        // param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
-        // float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
-        // param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
-        // float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
-        // param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
-        // float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
-        // param += "\"centroid\":" + ofToString(centroid) + ",";
-        // float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
-        // param += "\"rollOff\":" + ofToString(rollOff) + ",";
-        // float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
-        // param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
-        float isOnset = audioAnalyzer.getOnsetValue(i);
-        param += "\"isOnset\":" + ofToString(isOnset, 4) + ",";
+        if (featureRMS) {
+          param += "\"rms\":" + ofToString(rms, 4) + ",";
+        }
+        if (featurePOWER) {
+          float power = audioAnalyzer.getValue(POWER, i, smoothing);
+          param += "\"power\":" + ofToString(power, 4) + ",";
+        }
+        if (featurePITCH_FREQ) {
+          float pitchFreq = audioAnalyzer.getValue(PITCH_FREQ, i, smoothing);
+          param += "\"pitchFreq\":" + ofToString(pitchFreq) + ",";
+        }
+        if (featurePITCH_SALIENCE) {
+          float pitchSalience = audioAnalyzer.getValue(PITCH_SALIENCE, i);
+          param += "\"pitchSalience\":" + ofToString(pitchSalience) + ",";
+        }
+        if (featureINHARMONICITY) {
+          float inharmonicity = audioAnalyzer.getValue(INHARMONICITY, i);
+          param += "\"inharmonicity\":" + ofToString(inharmonicity) + ",";
+        }
+        if (featureCENTROID) {
+          float centroid = audioAnalyzer.getValue(CENTROID, i, smoothing);
+          param += "\"centroid\":" + ofToString(centroid) + ",";
+        }
+        if (featureROLL_OFF) {
+          float rollOff = audioAnalyzer.getValue(ROLL_OFF, i);
+          param += "\"rollOff\":" + ofToString(rollOff) + ",";
+        }
+        if (featureSTRONG_PEAK) {
+          float strongPeak = audioAnalyzer.getValue(STRONG_PEAK, i);
+          param += "\"strongPeak\":" + ofToString(strongPeak) + ",";
+        }
+        if (featureONSETS) {
+          float isOnset = audioAnalyzer.getOnsetValue(i);
+          param += "\"isOnset\":" + ofToString(isOnset, 4) + ",";
+        }
 
         param += "\"channel\":" + ofToString(i);
         param += "}";
