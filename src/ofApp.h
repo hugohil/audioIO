@@ -38,6 +38,8 @@ class ofApp : public ofBaseApp{
     ofxDatGuiTextInput* portInput;
     string host = "127.0.0.1";
     string port = "8888";
+    bool emitAll = false;
+    void onToggleEmitAll(ofxDatGuiToggleEvent e);
     void saveNetworkSettings();
     void saveNetworkSettings(ofxDatGuiButtonEvent e);
 

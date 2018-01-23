@@ -114,6 +114,8 @@ void ofApp::setup(){
   connectButton = networkGUI->addButton("connect/disconnect");
   connectButton->onButtonEvent(this, &ofApp::onButtonEvent);
   ofAddListener(socketIO.connectionEvent, this, &ofApp::onConnection);
+  ofxDatGuiToggle* toggleEmitAll = networkGUI->addToggle("emit every frame", emitAll);
+  toggleEmitAll->onToggleEvent(this, &ofApp::onToggleEmitAll);
 
   if (autostart) {
     connect();
@@ -250,11 +252,16 @@ void ofApp::onSetsUseTimeThresholdEvent(ofxDatGuiToggleEvent e){
   onSetsUseTimeThreshold = e.checked;
 }
 
+void ofApp::onToggleEmitAll(ofxDatGuiToggleEvent e){
+  emitAll = e.checked;
+}
+
 void ofApp::loadSettings(){
   settings.loadFile("settings.xml");
 
   host = settings.getValue("network:host", host);
   port = settings.getValue("network:port", port);
+  emitAll = settings.getValue("network:emitAll", emitAll);
 
   deviceIndex = settings.getValue("device:deviceIndex", deviceIndex);
   sampleRate = settings.getValue("device:sampleRate", sampleRate);
@@ -301,6 +308,7 @@ void ofApp::saveNetworkSettings(ofxDatGuiButtonEvent e){
 void ofApp::saveNetworkSettings(){
   settings.setValue("network:host", host);
   settings.setValue("network:port", port);
+  settings.setValue("network:emitAll", emitAll);
   settings.saveFile("settings.xml");
 }
 
@@ -395,7 +403,11 @@ void ofApp::update(){
       }
     }
     params += "{}]"; // small hack to avoid JSON parsing errors
-    if (socketIO.getStatus() == "connected") {
+    if (socketIO.getStatus() == "connected" // socket must be connected, obviously
+        && (
+          (params.compare("[{}]") == 0 && emitAll) // no data but you want to send either way
+          || (params.compare("[{}]") != 0)) // you do have datas
+        ) {
       string eventName = "aio-datas";
       socketIO.emit(eventName, params);
     }
