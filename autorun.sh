@@ -9,7 +9,7 @@
 export DISPLAY=:0.0
 
 PROGRAM='audioIO.app'
-COMMAND='open -n ./bin/audioIO.app --autostart'
+COMMAND='open -n ./bin/audioIO.app --args --autostart'
 
 while true; do
   if ps aux | grep -v grep | grep $PROGRAM
