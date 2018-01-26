@@ -14,7 +14,7 @@ COMMAND='open -n ./bin/audioIO.app --args --autostart'
 while true; do
   if ps aux | grep -v grep | grep $PROGRAM
     then
-      echo "found"
+      # echo "found"
     else
       echo "relaunching"
       $COMMAND
